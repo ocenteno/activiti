@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/partida">
+  <process id="simulador7wonders" name="Simulador 7 Wonders" isExecutable="true">
+    <startEvent id="sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD" activiti:initiator="initiator"></startEvent>
+    <callActivity id="inicializar" name="Iniciar" calledElement="inicializar">
+      <extensionElements>
+        <activiti:in source="initiator" target="initiator"></activiti:in>
+        <activiti:out source="result" target="game"></activiti:out>
+      </extensionElements>
+    </callActivity>
+    <callActivity id="preparacion" name="Fase de Preparación" calledElement="preparacion">
+      <extensionElements>
+        <activiti:in source="game" target="game"></activiti:in>
+      </extensionElements>
+    </callActivity>
+    <callActivity id="eraI" name="Era I" calledElement="era">
+      <extensionElements>
+        <activiti:in source="game" target="game"></activiti:in>
+        <activiti:in sourceExpression="1" target="input"></activiti:in>
+      </extensionElements>
+    </callActivity>
+    <callActivity id="era2" name="Era II" calledElement="era">
+      <extensionElements>
+        <activiti:in source="game" target="game"></activiti:in>
+        <activiti:in sourceExpression="2" target="input"></activiti:in>
+      </extensionElements>
+    </callActivity>
+    <callActivity id="era3" name="Era III" calledElement="era">
+      <extensionElements>
+        <activiti:in source="game" target="game"></activiti:in>
+        <activiti:in sourceExpression="3" target="input"></activiti:in>
+      </extensionElements>
+    </callActivity>
+    <callActivity id="recuento" name="Recuento"></callActivity>
+    <endEvent id="sid-CDBCA8A8-85A0-4F81-88C4-405918F37EA6"></endEvent>
+    <sequenceFlow id="sid-C66A32C9-4E51-4AB2-9CE6-ED554745732C" sourceRef="sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD" targetRef="inicializar"></sequenceFlow>
+    <sequenceFlow id="sid-C66A32C9-4351-44B2-9C36-3D5547457E2C" sourceRef="inicializar" targetRef="preparacion"></sequenceFlow>
+    <sequenceFlow id="sid-D98A747D-544E-49A6-B09A-B1C4760B5006" sourceRef="preparacion" targetRef="eraI"></sequenceFlow>
+    <sequenceFlow id="sid-85F5A9E1-34BB-4AFE-9637-91BC2A6B5176" sourceRef="eraI" targetRef="sid-CDBCA8A8-85A0-4F81-88C4-405918F37EA6"></sequenceFlow>
+    <sequenceFlow id="sid-CAFB1631-2CF9-4765-B862-4910889012CF" sourceRef="era2" targetRef="era3"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="era3" targetRef="recuento"></sequenceFlow>
+    <sequenceFlow id="sid-C004E2C9-A351-AAB2-9CE0-3D55A7A57E2C" sourceRef="recuento" targetRef="sid-CDBCA8A8-85A0-4F81-88C4-405918F37EA6"></sequenceFlow>
+    <textAnnotation id="textannotation1">
+      <text>Crear partida, asignar Maravillas y posiciones, separar cartas</text>
+    </textAnnotation>
+    <association id="association1" sourceRef="textannotation1" targetRef="inicializar"></association>
+    <textAnnotation id="textannotation2">
+      <text>Coger monedas, repartir y elegir líderes/babel</text>
+    </textAnnotation>
+    <association id="association2" sourceRef="textannotation2" targetRef="preparacion"></association>
+    <textAnnotation id="textannotation3">
+      <text>Invocar líder, repartir cartas, iterar selección de carta</text>
+    </textAnnotation>
+    <association id="association3" sourceRef="textannotation3" targetRef="era2"></association>
+    <association id="association4" sourceRef="textannotation3" targetRef="era3"></association>
+    <association id="association5" sourceRef="textannotation3" targetRef="eraI"></association>
+    <textAnnotation id="textannotation4">
+      <text>Contar puntos por grupo para cada jugador, mostrar resultado</text>
+    </textAnnotation>
+    <association id="association6" sourceRef="textannotation4" targetRef="recuento"></association>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_simulador7wonders">
+    <bpmndi:BPMNPlane bpmnElement="simulador7wonders" id="BPMNPlane_simulador7wonders">
+      <bpmndi:BPMNShape bpmnElement="sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD" id="BPMNShape_sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD">
+        <omgdc:Bounds height="35.0" width="35.0" x="130.0" y="79.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="inicializar" id="BPMNShape_inicializar">
+        <omgdc:Bounds height="80.0" width="105.0" x="210.0" y="57.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="preparacion" id="BPMNShape_preparacion">
+        <omgdc:Bounds height="80.0" width="100.0" x="352.0" y="58.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eraI" id="BPMNShape_eraI">
+        <omgdc:Bounds height="80.0" width="100.0" x="497.0" y="58.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="era2" id="BPMNShape_era2">
+        <omgdc:Bounds height="80.0" width="100.0" x="642.0" y="58.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="era3" id="BPMNShape_era3">
+        <omgdc:Bounds height="80.0" width="100.0" x="787.0" y="58.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="recuento" id="BPMNShape_recuento">
+        <omgdc:Bounds height="80.0" width="100.0" x="937.0" y="58.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CDBCA8A8-85A0-4F81-88C4-405918F37EA6" id="BPMNShape_sid-CDBCA8A8-85A0-4F81-88C4-405918F37EA6">
+        <omgdc:Bounds height="35.0" width="35.0" x="1082.0" y="80.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation1" id="BPMNShape_textannotation1">
+        <omgdc:Bounds height="81.0" width="119.0" x="203.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation2" id="BPMNShape_textannotation2">
+        <omgdc:Bounds height="81.0" width="119.0" x="342.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation3" id="BPMNShape_textannotation3">
+        <omgdc:Bounds height="81.0" width="119.0" x="632.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="textannotation4" id="BPMNShape_textannotation4">
+        <omgdc:Bounds height="81.0" width="119.0" x="927.0" y="180.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-C66A32C9-4E51-4AB2-9CE6-ED554745732C" id="BPMNEdge_sid-C66A32C9-4E51-4AB2-9CE6-ED554745732C">
+        <omgdi:waypoint x="165.0" y="96.0"></omgdi:waypoint>
+        <omgdi:waypoint x="210.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C66A32C9-4351-44B2-9C36-3D5547457E2C" id="BPMNEdge_sid-C66A32C9-4351-44B2-9C36-3D5547457E2C">
+        <omgdi:waypoint x="315.0" y="97.0"></omgdi:waypoint>
+        <omgdi:waypoint x="352.0" y="98.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-D98A747D-544E-49A6-B09A-B1C4760B5006" id="BPMNEdge_sid-D98A747D-544E-49A6-B09A-B1C4760B5006">
+        <omgdi:waypoint x="452.0" y="98.0"></omgdi:waypoint>
+        <omgdi:waypoint x="497.0" y="98.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-85F5A9E1-34BB-4AFE-9637-91BC2A6B5176" id="BPMNEdge_sid-85F5A9E1-34BB-4AFE-9637-91BC2A6B5176">
+        <omgdi:waypoint x="597.0" y="98.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1082.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-CAFB1631-2CF9-4765-B862-4910889012CF" id="BPMNEdge_sid-CAFB1631-2CF9-4765-B862-4910889012CF">
+        <omgdi:waypoint x="742.0" y="98.0"></omgdi:waypoint>
+        <omgdi:waypoint x="787.0" y="98.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="887.0" y="98.0"></omgdi:waypoint>
+        <omgdi:waypoint x="937.0" y="98.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C004E2C9-A351-AAB2-9CE0-3D55A7A57E2C" id="BPMNEdge_sid-C004E2C9-A351-AAB2-9CE0-3D55A7A57E2C">
+        <omgdi:waypoint x="1037.0" y="98.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1082.0" y="97.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association1" id="BPMNEdge_association1">
+        <omgdi:waypoint x="262.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="262.0" y="137.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association2" id="BPMNEdge_association2">
+        <omgdi:waypoint x="401.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="402.0" y="138.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association3" id="BPMNEdge_association3">
+        <omgdi:waypoint x="691.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="692.0" y="138.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association4" id="BPMNEdge_association4">
+        <omgdi:waypoint x="691.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="837.0" y="138.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association5" id="BPMNEdge_association5">
+        <omgdi:waypoint x="691.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="547.0" y="138.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association6" id="BPMNEdge_association6">
+        <omgdi:waypoint x="986.0" y="180.0"></omgdi:waypoint>
+        <omgdi:waypoint x="987.0" y="138.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
