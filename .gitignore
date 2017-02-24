@@ -1,1 +1,6 @@
 /target/
+/deployment/
+/.bpmn/
+/.settings/
+/.classpath
+/.project
