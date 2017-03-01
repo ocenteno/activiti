@@ -9,5 +9,14 @@ public enum Resource {
   GLASS,
   PAPYRUS,
   ALL,
-  ANY
+  ANY;
+
+  public boolean isRaw() {
+    return ordinal() < 4;
+  }
+
+  public boolean isManufactured() {
+    return !isRaw() && ordinal() < 7;
+  }
+
 }

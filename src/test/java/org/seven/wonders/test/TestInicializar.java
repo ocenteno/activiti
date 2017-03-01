@@ -1,4 +1,4 @@
-package org.activiti.designer.test;
+package org.seven.wonders.test;
 
 import static org.junit.Assert.*;
 

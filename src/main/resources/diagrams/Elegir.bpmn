@@ -46,7 +46,7 @@ current.cardToPlay=card</script>
         <extensionElements>
           <activiti:in source="current.wonder.produces" target="prod"></activiti:in>
           <activiti:in source="card.cost" target="cost"></activiti:in>
-          <activiti:in source="current.wonder" target="current"></activiti:in>
+          <activiti:in source="current" target="current"></activiti:in>
           <activiti:out source="canBuild" target="canBuild"></activiti:out>
         </extensionElements>
       </callActivity>

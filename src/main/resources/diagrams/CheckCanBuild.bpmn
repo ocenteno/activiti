@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/ccb">
-  <signal id="choose-card-signal" name="Choose Card" activiti:scope="processInstance"></signal>
-  <signal id="card-choosen-signal" name="End Choose" activiti:scope="processInstance"></signal>
+  <signal id="eval-combinations-signal" name="Evaluate combinations" activiti:scope="processInstance"></signal>
+  <signal id="combination-found-signal" name="Combination found" activiti:scope="processInstance"></signal>
+  <signal id="choose-card-signal" name="choose-card-signal"></signal>
   <process id="check-can-build" name="Check Can Build" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
@@ -18,23 +19,25 @@ def options = maps.collect{it.value}.transpose()
 execution.setVariable("options", options)</script>
     </scriptTask>
     <scriptTask id="process-cost-produces" name="Cost &amp; Produces ToArray()" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <script>def need = [cost.coins,cost.woods,cost.ores,cost.clays,cost.stones,cost.textiles,cost.glasses,cost.papyruses]
+      <script>println current
+def need = [cost.coins,cost.woods,cost.ores,cost.clays,cost.stones,cost.textiles,cost.glasses,cost.papyruses]
 def have = [prod.coins,prod.woods,prod.ores,prod.clays,prod.stones,prod.textiles,prod.glasses,prod.papyruses]
 execution.setVariable("need", need)
-execution.setVariable("have", have)</script>
+execution.setVariable("have", have)
+execution.setVariable("canBuild", false)</script>
     </scriptTask>
     <sequenceFlow id="flow2" sourceRef="startevent1" targetRef="process-cost-produces"></sequenceFlow>
-    <sequenceFlow id="flow3" sourceRef="process-cost-produces" targetRef="compare-need-have"></sequenceFlow>
-    <scriptTask id="compare-need-have" name="Compare Need &amp; Have" default="cannot-build-directly" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <sequenceFlow id="flow3" sourceRef="process-cost-produces" targetRef="compare-need-have-script"></sequenceFlow>
+    <scriptTask id="compare-need-have-script" name="Compare Need &amp; Have" default="cannot-build-directly" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>def remain = need.withIndex().collect{ it,i -&gt; Math.max(0,it - have[i]) }
 def canBuild=false
 if(remain.clone().unique() == [0]) canBuild=true
 execution.setVariable("remain", remain)
 execution.setVariable("canBuild", canBuild)</script>
     </scriptTask>
-    <sequenceFlow id="cannot-build-directly" name="Cannot build" sourceRef="compare-need-have" targetRef="have-coins-left"></sequenceFlow>
-    <sequenceFlow id="can-build-directly" name="Can build" sourceRef="compare-need-have" targetRef="endevent1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${canBuild==true}]]></conditionExpression>
+    <sequenceFlow id="cannot-build-directly" name="Cannot build" sourceRef="compare-need-have-script" targetRef="have-coins-left"></sequenceFlow>
+    <sequenceFlow id="can-build-directly" name="Can build" sourceRef="compare-need-have-script" targetRef="endevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${canBuild == true}]]></conditionExpression>
     </sequenceFlow>
     <scriptTask id="have-coins-left" name="Have coins left ?" default="coins-left" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>def costLeft = remain.reverse()
@@ -42,7 +45,7 @@ execution.setVariable("canBuild", canBuild)</script>
 execution.setVariable("noCoins", costLeft.pop() &gt; 0) 
 execution.setVariable("remain", costLeft.reverse())</script>
     </scriptTask>
-    <scriptTask id="evaluate-options" name="Evaluate Options" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="evaluate-options-script" name="Evaluate Combinations" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="${options}" activiti:elementVariable="have">
         <completionCondition>${canBuild==true}</completionCondition>
       </multiInstanceLoopCharacteristics>
@@ -52,111 +55,148 @@ if(costLeft.clone().unique() == [0]) canBuild=true
 execution.setVariable("remain", costLeft)
 execution.setVariable("canBuild", canBuild)</script>
     </scriptTask>
-    <sequenceFlow id="flow4" sourceRef="prepare-double-resources" targetRef="evaluate-options"></sequenceFlow>
-    <scriptTask id="evaluate-buying" name="Evaluate Buying" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <script>print "ok"</script>
-    </scriptTask>
-    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="coins-left"></exclusiveGateway>
-    <sequenceFlow id="cannot-build-with-or" name="Cannot build" sourceRef="evaluate-options" targetRef="exclusivegateway1">
+    <sequenceFlow id="flow4" sourceRef="prepare-double-resources" targetRef="evaluate-options-script"></sequenceFlow>
+    <exclusiveGateway id="do-you-have-coins" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="cannot-build-with-or" name="Cannot build" sourceRef="evaluate-options-script" targetRef="do-you-have-coins">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${canBuild==false}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="coins-left" name="Has coins" sourceRef="exclusivegateway1" targetRef="evaluate-buying"></sequenceFlow>
-    <sequenceFlow id="no-coin-left" name="Hasn't coins" sourceRef="exclusivegateway1" targetRef="endevent1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${noCoins==true}]]></conditionExpression>
+    <sequenceFlow id="coins-left" name="Has coins" sourceRef="do-you-have-coins" targetRef="check-can-buy">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${noCoins == false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="no-coin-left" name="Hasn't coins" sourceRef="do-you-have-coins" targetRef="endevent1">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${noCoins == true}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow7" sourceRef="have-coins-left" targetRef="prepare-double-resources"></sequenceFlow>
-    <sequenceFlow id="can-build-with-or" name="Can build" sourceRef="evaluate-options" targetRef="endevent1">
+    <sequenceFlow id="can-build-with-or" name="Can build" sourceRef="evaluate-options-script" targetRef="endevent1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${canBuild==true}]]></conditionExpression>
     </sequenceFlow>
+    <serviceTask id="check-can-buy" name="Get buying options" activiti:class="org.seven.wonders.services.CheckCanBuy">
+      <extensionElements>
+        <activiti:field name="player">
+          <activiti:expression><![CDATA[${current}]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <callActivity id="compare-need-have-direct" name="Compare Need &amp; Have" default="can-build-directly" calledElement="myProcess">
+      <extensionElements>
+        <activiti:in source="need" target="need"></activiti:in>
+        <activiti:in source="have" target="have"></activiti:in>
+        <activiti:out source="canBuild" target="canBuild"></activiti:out>
+        <activiti:out source="remain" target="remain"></activiti:out>
+      </extensionElements>
+    </callActivity>
+    <callActivity id="compare-need-have-options" name="Evaluate Combinations" calledElement="compare-need-have">
+      <extensionElements>
+        <activiti:in source="remain" target="need"></activiti:in>
+        <activiti:in source="have" target="have"></activiti:in>
+        <activiti:out source="canBuild" target="canBuild"></activiti:out>
+        <activiti:out source="remain" target="remain"></activiti:out>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="${options}" activiti:elementVariable="have">
+        <completionCondition>${canBuild==true}</completionCondition>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+    <sequenceFlow id="flow8" sourceRef="check-can-buy" targetRef="endevent1"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_check-can-build">
     <bpmndi:BPMNPlane bpmnElement="check-can-build" id="BPMNPlane_check-can-build">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="223.0" y="104.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="153.0" y="104.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="593.0" y="390.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="523.0" y="390.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="prepare-double-resources" id="BPMNShape_prepare-double-resources">
-        <omgdc:Bounds height="71.0" width="121.0" x="550.0" y="86.0"></omgdc:Bounds>
+        <omgdc:Bounds height="71.0" width="121.0" x="480.0" y="86.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="process-cost-produces" id="BPMNShape_process-cost-produces">
-        <omgdc:Bounds height="71.0" width="121.0" x="180.0" y="230.0"></omgdc:Bounds>
+        <omgdc:Bounds height="71.0" width="121.0" x="110.0" y="230.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="compare-need-have" id="BPMNShape_compare-need-have">
-        <omgdc:Bounds height="71.0" width="121.0" x="360.0" y="230.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="compare-need-have-script" id="BPMNShape_compare-need-have-script">
+        <omgdc:Bounds height="71.0" width="121.0" x="290.0" y="230.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="have-coins-left" id="BPMNShape_have-coins-left">
-        <omgdc:Bounds height="71.0" width="121.0" x="360.0" y="86.0"></omgdc:Bounds>
+        <omgdc:Bounds height="71.0" width="121.0" x="290.0" y="86.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="evaluate-options" id="BPMNShape_evaluate-options">
-        <omgdc:Bounds height="71.0" width="121.0" x="550.0" y="230.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="evaluate-options-script" id="BPMNShape_evaluate-options-script">
+        <omgdc:Bounds height="71.0" width="121.0" x="480.0" y="230.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="evaluate-buying" id="BPMNShape_evaluate-buying">
-        <omgdc:Bounds height="71.0" width="121.0" x="730.0" y="86.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="do-you-have-coins" id="BPMNShape_do-you-have-coins">
+        <omgdc:Bounds height="40.0" width="40.0" x="700.0" y="245.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
-        <omgdc:Bounds height="40.0" width="40.0" x="770.0" y="245.0"></omgdc:Bounds>
+      <bpmndi:BPMNShape bpmnElement="check-can-buy" id="BPMNShape_check-can-buy">
+        <omgdc:Bounds height="71.0" width="121.0" x="820.0" y="230.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="compare-need-have-direct" id="BPMNShape_compare-need-have-direct">
+        <omgdc:Bounds height="71.0" width="121.0" x="110.0" y="372.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="compare-need-have-options" id="BPMNShape_compare-need-have-options">
+        <omgdc:Bounds height="71.0" width="121.0" x="690.0" y="85.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
-        <omgdi:waypoint x="240.0" y="139.0"></omgdi:waypoint>
-        <omgdi:waypoint x="240.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="170.0" y="139.0"></omgdi:waypoint>
+        <omgdi:waypoint x="170.0" y="230.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
-        <omgdi:waypoint x="301.0" y="265.0"></omgdi:waypoint>
-        <omgdi:waypoint x="360.0" y="265.0"></omgdi:waypoint>
+        <omgdi:waypoint x="231.0" y="265.0"></omgdi:waypoint>
+        <omgdi:waypoint x="290.0" y="265.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="cannot-build-directly" id="BPMNEdge_cannot-build-directly">
-        <omgdi:waypoint x="420.0" y="230.0"></omgdi:waypoint>
-        <omgdi:waypoint x="420.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="350.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="350.0" y="157.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="72.0" x="422.0" y="181.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="72.0" x="352.0" y="181.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="can-build-directly" id="BPMNEdge_can-build-directly">
-        <omgdi:waypoint x="420.0" y="301.0"></omgdi:waypoint>
-        <omgdi:waypoint x="420.0" y="407.0"></omgdi:waypoint>
-        <omgdi:waypoint x="593.0" y="407.0"></omgdi:waypoint>
+        <omgdi:waypoint x="350.0" y="301.0"></omgdi:waypoint>
+        <omgdi:waypoint x="350.0" y="407.0"></omgdi:waypoint>
+        <omgdi:waypoint x="523.0" y="407.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="54.0" x="440.0" y="389.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="54.0" x="370.0" y="374.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
-        <omgdi:waypoint x="610.0" y="157.0"></omgdi:waypoint>
-        <omgdi:waypoint x="610.0" y="230.0"></omgdi:waypoint>
+        <omgdi:waypoint x="540.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="540.0" y="230.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="cannot-build-with-or" id="BPMNEdge_cannot-build-with-or">
-        <omgdi:waypoint x="671.0" y="265.0"></omgdi:waypoint>
-        <omgdi:waypoint x="770.0" y="265.0"></omgdi:waypoint>
+        <omgdi:waypoint x="601.0" y="265.0"></omgdi:waypoint>
+        <omgdi:waypoint x="700.0" y="265.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="72.0" x="679.0" y="240.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="72.0" x="609.0" y="240.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="coins-left" id="BPMNEdge_coins-left">
-        <omgdi:waypoint x="790.0" y="245.0"></omgdi:waypoint>
-        <omgdi:waypoint x="790.0" y="157.0"></omgdi:waypoint>
+        <omgdi:waypoint x="740.0" y="265.0"></omgdi:waypoint>
+        <omgdi:waypoint x="820.0" y="265.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="58.0" x="800.0" y="196.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="58.0" x="749.0" y="240.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="no-coin-left" id="BPMNEdge_no-coin-left">
-        <omgdi:waypoint x="790.0" y="285.0"></omgdi:waypoint>
-        <omgdi:waypoint x="789.0" y="407.0"></omgdi:waypoint>
-        <omgdi:waypoint x="628.0" y="407.0"></omgdi:waypoint>
+        <omgdi:waypoint x="720.0" y="285.0"></omgdi:waypoint>
+        <omgdi:waypoint x="719.0" y="407.0"></omgdi:waypoint>
+        <omgdi:waypoint x="558.0" y="407.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="71.0" x="681.0" y="389.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="71.0" x="611.0" y="389.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="481.0" y="121.0"></omgdi:waypoint>
-        <omgdi:waypoint x="550.0" y="121.0"></omgdi:waypoint>
+        <omgdi:waypoint x="411.0" y="121.0"></omgdi:waypoint>
+        <omgdi:waypoint x="480.0" y="121.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="can-build-with-or" id="BPMNEdge_can-build-with-or">
-        <omgdi:waypoint x="610.0" y="301.0"></omgdi:waypoint>
-        <omgdi:waypoint x="610.0" y="390.0"></omgdi:waypoint>
+        <omgdi:waypoint x="540.0" y="301.0"></omgdi:waypoint>
+        <omgdi:waypoint x="540.0" y="390.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="54.0" x="617.0" y="319.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="54.0" x="410.0" y="308.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="880.0" y="301.0"></omgdi:waypoint>
+        <omgdi:waypoint x="880.0" y="407.0"></omgdi:waypoint>
+        <omgdi:waypoint x="558.0" y="407.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -1,4 +1,4 @@
-package org.activiti.designer.test;
+package org.seven.wonders.test;
 
 import static org.junit.Assert.*;
 import static org.seven.wonders.tokens.Resource.*;
@@ -10,9 +10,12 @@ import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.test.Deployment;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.seven.wonders.tokens.Cost;
 import org.seven.wonders.tokens.Production;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TestCheckCanBuild extends AbstractTest {
 
   private static final Cost DONT_HAVE_ENOUGH_GOLD_COST = new Cost(2, STONE);
@@ -34,6 +37,7 @@ public class TestCheckCanBuild extends AbstractTest {
   static {
     HAVE_OR_RESOURCES_TO_BUY_PROD.addOr(WOOD, STONE);
     HAVE_OR_RESOURCES_TO_BUY_PROD.addOr(WOOD, ORE);
+    HAVE_OR_RESOURCES_TO_BUY_PROD.addOr(TEXTILE, GLASS, PAPYRUS);
     DONT_HAVE_OR_RESOURCES_TO_BUY_PROD.addOr(CLAY, STONE);
   }
 
@@ -55,7 +59,7 @@ public class TestCheckCanBuild extends AbstractTest {
     variableMap.put("prod", HAVE_ENOUGH_RESOURCES_TO_BUY_PROD);
     this.processInstance = this.runtimeService.startProcessInstanceByKey(this.name, variableMap);
     assertTrue(this.processInstance instanceof VariableScope);
-    assertEquals(((VariableScope)this.processInstance).getVariable("canBuild"), true);
+    assertEquals(true, ((VariableScope)this.processInstance).getVariable("canBuild"));
   }
 
   @Test
@@ -66,29 +70,28 @@ public class TestCheckCanBuild extends AbstractTest {
     variableMap.put("prod", DONT_HAVE_ENOUGH_GOLD_PROD);
     this.processInstance = this.runtimeService.startProcessInstanceByKey(this.name, variableMap);
     assertTrue(this.processInstance instanceof VariableScope);
-    assertEquals(((VariableScope)this.processInstance).getVariable("canBuild"), false);
+    assertEquals(false, ((VariableScope)this.processInstance).getVariable("canBuild"));
   }
 
   @Test
-  @Deployment(resources = { "diagrams/CheckCanBuild.bpmn" })
+  @Deployment(resources = { "diagrams/CheckCanBuild.bpmn", "diagrams/CompareNeedHave.bpmn" })
   public void testHaveOrResourcesToBuy() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("cost", HAVE_OR_RESOURCES_TO_BUY_COST);
     variableMap.put("prod", HAVE_OR_RESOURCES_TO_BUY_PROD);
     this.processInstance = this.runtimeService.startProcessInstanceByKey(this.name, variableMap);
     assertTrue(this.processInstance instanceof VariableScope);
-    assertEquals(((VariableScope)this.processInstance).getVariable("canBuild"), true);
+    assertEquals(true, ((VariableScope)this.processInstance).getVariable("canBuild"));
   }
 
   @Test
-  @Deployment(resources = { "diagrams/CheckCanBuild.bpmn" })
+  @Deployment(resources = { "diagrams/CheckCanBuild.bpmn", "diagrams/CompareNeedHave.bpmn" })
   public void testDontHaveOrResourcesToBuy() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("cost", DONT_HAVE_OR_RESOURCES_TO_BUY_COST);
     variableMap.put("prod", DONT_HAVE_OR_RESOURCES_TO_BUY_PROD);
     this.processInstance = this.runtimeService.startProcessInstanceByKey(this.name, variableMap);
     assertTrue(this.processInstance instanceof VariableScope);
-    assertEquals(((VariableScope)this.processInstance).getVariable("canBuild"), false);
+    assertEquals(false, ((VariableScope)this.processInstance).getVariable("canBuild"));
   }
-
 }

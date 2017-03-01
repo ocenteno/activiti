@@ -1,4 +1,4 @@
-package org.activiti.designer.test;
+package org.seven.wonders.test;
 
 import java.util.HashMap;
 import java.util.Map;
