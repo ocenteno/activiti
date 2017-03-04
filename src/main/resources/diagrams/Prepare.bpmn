@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/prepare">
-  <process id="preparacion" name="Prepare 7 Wonders Game" isExecutable="true">
+  <process id="prepare" name="Prepare 7 Wonders Game" isExecutable="true">
     <startEvent id="inicio" name="Start"></startEvent>
     <sequenceFlow id="flow1" sourceRef="inicio" targetRef="give-coins"></sequenceFlow>
     <endEvent id="endevent1" name="End"></endEvent>
@@ -22,7 +22,7 @@ if(efecto != null){
     </scriptTask>
     <sequenceFlow id="flow3" sourceRef="give-coins" targetRef="call-wonder"></sequenceFlow>
     <sequenceFlow id="flow4" sourceRef="shuffle-leaders" targetRef="distribute-leaders"></sequenceFlow>
-    <callActivity id="distribute-leaders" name="Distribute Leaders" calledElement="repartir">
+    <callActivity id="distribute-leaders" name="Distribute Leaders" calledElement="distribute">
       <extensionElements>
         <activiti:in source="game" target="game"></activiti:in>
         <activiti:in source="cards" target="cards"></activiti:in>
@@ -57,8 +57,8 @@ if(efecto != null){
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
     </callActivity>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_preparacion">
-    <bpmndi:BPMNPlane bpmnElement="preparacion" id="BPMNPlane_preparacion">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_prepare">
+    <bpmndi:BPMNPlane bpmnElement="prepare" id="BPMNPlane_prepare">
       <bpmndi:BPMNShape bpmnElement="inicio" id="BPMNShape_inicio">
         <omgdc:Bounds height="35.0" width="35.0" x="80.0" y="200.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

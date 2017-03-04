@@ -37,7 +37,7 @@ public class AbstractTest {
     this.processInstance = this.runtimeService.startProcessInstanceByKey(this.name, variableMap);
   }
 
-  protected void introducirConfiguracionPorDefecto(TaskService taskService, Task formulario) {
+  protected void testData(TaskService taskService, Task formulario) {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("numPlayers", new Random(System.currentTimeMillis()).nextInt(5) + 3);
     variableMap.put("leaders", false);

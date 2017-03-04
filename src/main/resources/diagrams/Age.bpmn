@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/age">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/age">
   <process id="age" name="Execution of an Age" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
-    <scriptTask id="elegir-carta" name="Construir" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="play-card" name="Play Card" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
       <script>current.hand.remove(0)</script>
     </scriptTask>
     <endEvent id="endevent1" name="End"></endEvent>
-    <sequenceFlow id="flow3" sourceRef="repartir-cartas" targetRef="choose-card"></sequenceFlow>
-    <sequenceFlow id="repartir" sourceRef="gateway-elegir-lider" targetRef="preparar-mazo"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="distribute-age-cards" targetRef="choose-card"></sequenceFlow>
+    <sequenceFlow id="repartir" sourceRef="gateway-elegir-lider" targetRef="prepare-age-deck"></sequenceFlow>
     <sequenceFlow id="last-card" sourceRef="gateway-siguiente-turno" targetRef="endevent1">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.lastCard}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow7" sourceRef="elegir-carta" targetRef="gateway-siguiente-turno"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="play-card" targetRef="gateway-siguiente-turno"></sequenceFlow>
     <exclusiveGateway id="gateway-elegir-lider" name="Gateway Elegir Lider" default="repartir"></exclusiveGateway>
     <sequenceFlow id="flow8" sourceRef="startevent1" targetRef="gateway-elegir-lider"></sequenceFlow>
-    <sequenceFlow id="lideres" name="leaders | thrones" sourceRef="gateway-elegir-lider" targetRef="invocar-lider">
+    <sequenceFlow id="lideres" name="leaders | thrones" sourceRef="gateway-elegir-lider" targetRef="call-leader">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.leaders || game.thrones}]]></conditionExpression>
     </sequenceFlow>
-    <scriptTask id="invocar-lider" name="Invocar lider" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="call-leader" name="Play Leader" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
       <script>println "$current invoca Lider"</script>
     </scriptTask>
-    <sequenceFlow id="flow10" sourceRef="preparar-mazo" targetRef="repartir-cartas"></sequenceFlow>
-    <serviceTask id="pasar-cartas" name="Pasar Cartas" activiti:class="org.seven.wonders.services.PasarCartas">
+    <sequenceFlow id="flow10" sourceRef="prepare-age-deck" targetRef="distribute-age-cards"></sequenceFlow>
+    <serviceTask id="change-cards-in-hand" name="Change cards in hand" activiti:class="org.seven.wonders.services.PasarCartas">
       <extensionElements>
         <activiti:field name="currentAge">
           <activiti:expression><![CDATA[${input}]]></activiti:expression>
         </activiti:field>
       </extensionElements>
     </serviceTask>
-    <exclusiveGateway id="gateway-siguiente-turno" name="Gateway Siguiente Turno" default="repetir"></exclusiveGateway>
-    <sequenceFlow id="flow11" sourceRef="pasar-cartas" targetRef="elegir-carta"></sequenceFlow>
-    <sequenceFlow id="repetir" name="Hay cartas" sourceRef="gateway-siguiente-turno" targetRef="pasar-cartas"></sequenceFlow>
-    <callActivity id="repartir-cartas" name="Repartir Cartas" calledElement="repartir">
+    <exclusiveGateway id="gateway-siguiente-turno" name="Gateway Siguiente Turno"></exclusiveGateway>
+    <sequenceFlow id="flow11" sourceRef="change-cards-in-hand" targetRef="play-card"></sequenceFlow>
+    <sequenceFlow id="move-cards" name="There are cards left" sourceRef="gateway-siguiente-turno" targetRef="change-cards-in-hand"></sequenceFlow>
+    <callActivity id="distribute-age-cards" name="Distribute Age Cards" calledElement="distribute">
       <extensionElements>
         <activiti:in source="game" target="game"></activiti:in>
         <activiti:in source="cards" target="cards"></activiti:in>
       </extensionElements>
     </callActivity>
-    <scriptTask id="preparar-mazo" name="Preparar mazo" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="prepare-age-deck" name="Prepare Age Deck" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>def age =Integer.valueOf(input)
 def cards = org.seven.wonders.cards.CardsFactory.getCards(age, game.totalPlayers(), game.cities)
 execution.setVariable("cards", cards)</script>
     </scriptTask>
-    <sequenceFlow id="flow12" sourceRef="invocar-lider" targetRef="preparar-mazo"></sequenceFlow>
-    <callActivity id="choose-card" name="Elegir Carta" calledElement="elegir">
+    <sequenceFlow id="flow12" sourceRef="call-leader" targetRef="prepare-age-deck"></sequenceFlow>
+    <callActivity id="choose-card" name="Choose Card to Play" calledElement="elegir">
       <extensionElements>
         <activiti:in source="game" target="game"></activiti:in>
         <activiti:in source="current" target="current"></activiti:in>
@@ -53,35 +53,35 @@ execution.setVariable("cards", cards)</script>
       </extensionElements>
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
     </callActivity>
-    <sequenceFlow id="flow13" sourceRef="choose-card" targetRef="elegir-carta"></sequenceFlow>
+    <sequenceFlow id="flow13" sourceRef="choose-card" targetRef="play-card"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_age">
     <bpmndi:BPMNPlane bpmnElement="age" id="BPMNPlane_age">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="124.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="elegir-carta" id="BPMNShape_elegir-carta">
+      <bpmndi:BPMNShape bpmnElement="play-card" id="BPMNShape_play-card">
         <omgdc:Bounds height="80.0" width="105.0" x="710.0" y="103.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="1088.0" y="126.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="1000.0" y="126.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="gateway-elegir-lider" id="BPMNShape_gateway-elegir-lider">
         <omgdc:Bounds height="40.0" width="40.0" x="166.0" y="121.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="invocar-lider" id="BPMNShape_invocar-lider">
+      <bpmndi:BPMNShape bpmnElement="call-leader" id="BPMNShape_call-leader">
         <omgdc:Bounds height="80.0" width="105.0" x="260.0" y="211.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="pasar-cartas" id="BPMNShape_pasar-cartas">
+      <bpmndi:BPMNShape bpmnElement="change-cards-in-hand" id="BPMNShape_change-cards-in-hand">
         <omgdc:Bounds height="80.0" width="105.0" x="710.0" y="213.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="gateway-siguiente-turno" id="BPMNShape_gateway-siguiente-turno">
         <omgdc:Bounds height="40.0" width="40.0" x="878.0" y="123.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="repartir-cartas" id="BPMNShape_repartir-cartas">
+      <bpmndi:BPMNShape bpmnElement="distribute-age-cards" id="BPMNShape_distribute-age-cards">
         <omgdc:Bounds height="80.0" width="105.0" x="412.0" y="102.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="preparar-mazo" id="BPMNShape_preparar-mazo">
+      <bpmndi:BPMNShape bpmnElement="prepare-age-deck" id="BPMNShape_prepare-age-deck">
         <omgdc:Bounds height="80.0" width="105.0" x="260.0" y="102.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="choose-card" id="BPMNShape_choose-card">
@@ -97,7 +97,7 @@ execution.setVariable("cards", cards)</script>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="last-card" id="BPMNEdge_last-card">
         <omgdi:waypoint x="918.0" y="143.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1088.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1000.0" y="143.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
         <omgdi:waypoint x="815.0" y="143.0"></omgdi:waypoint>
@@ -123,12 +123,12 @@ execution.setVariable("cards", cards)</script>
         <omgdi:waypoint x="762.0" y="213.0"></omgdi:waypoint>
         <omgdi:waypoint x="762.0" y="183.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="repetir" id="BPMNEdge_repetir">
+      <bpmndi:BPMNEdge bpmnElement="move-cards" id="BPMNEdge_move-cards">
         <omgdi:waypoint x="898.0" y="163.0"></omgdi:waypoint>
         <omgdi:waypoint x="898.0" y="252.0"></omgdi:waypoint>
         <omgdi:waypoint x="815.0" y="253.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="63.0" x="849.0" y="261.0"></omgdc:Bounds>
+          <omgdc:Bounds height="48.0" width="100.0" x="849.0" y="261.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">

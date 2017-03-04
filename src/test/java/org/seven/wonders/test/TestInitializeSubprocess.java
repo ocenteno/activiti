@@ -8,21 +8,20 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.junit.Test;
 
-public class TestInicializar extends AbstractTest {
+public class TestInitializeSubprocess extends AbstractTest {
 
-  public TestInicializar() {
-    super("inicializar");
+  public TestInitializeSubprocess() {
+    super("initialize");
   }
 
   @Test
-  @Deployment(resources = { "diagrams/Inicializacion.bpmn" })
-  public void testProcess() {
+  @Deployment(resources = { "diagrams/Initialize.bpmn" })
+  public void testInitializeProcess() {
     TaskService taskService = this.activitiRule.getTaskService();
-    Task formulario =
-        taskService.createTaskQuery().taskDefinitionKey(this.processInstance.getActivityId()).singleResult();
-    assertEquals("Init Form", formulario.getName());
+    Task form = taskService.createTaskQuery().taskDefinitionKey(this.processInstance.getActivityId()).singleResult();
+    assertEquals("Init Form", form.getName());
 
-    introducirConfiguracionPorDefecto(taskService, formulario);
+    testData(taskService, form);
 
     HistoricProcessInstance historicProcessInstance = getHistoricProcessInstance();
     assertNotNull(historicProcessInstance);

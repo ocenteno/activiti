@@ -30,7 +30,7 @@ import org.seven.wonders.tokens.Production;
 import org.seven.wonders.tokens.Resource;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TestCheckCanBuildBuying extends AbstractTest {
+public class TestCheckCanBuildSubprocessBuying extends AbstractTest {
 
   private static final Production CURRENT_PROD = new Production(ORE);
 
@@ -72,7 +72,7 @@ public class TestCheckCanBuildBuying extends AbstractTest {
     public Object answer(InvocationOnMock invocation) throws Throwable {
       Object[] args = invocation.getArguments();
       if (args.length > 1) {
-        TestCheckCanBuildBuying.this.result = args[1];
+        TestCheckCanBuildSubprocessBuying.this.result = args[1];
       }
       return null;
     }
@@ -92,7 +92,7 @@ public class TestCheckCanBuildBuying extends AbstractTest {
     CURRENT.getWonder().getProduces().add(4);
   }
 
-  public TestCheckCanBuildBuying() {
+  public TestCheckCanBuildSubprocessBuying() {
     super("check-can-build");
     if (this.playersByScope == null) {
       this.playersByScope = new HashMap<Scope, List<Player>>();
@@ -147,7 +147,7 @@ public class TestCheckCanBuildBuying extends AbstractTest {
   // @Test
   public void testCanBuyResources1GoldRight() throws Exception {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_OK_1_COIN);
-    when(TestCheckCanBuildBuying.CURRENT.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
+    when(TestCheckCanBuildSubprocessBuying.CURRENT.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
         new Answer<Integer>() {
           @Override
           public Integer answer(InvocationOnMock invocation) throws Throwable {
@@ -173,7 +173,7 @@ public class TestCheckCanBuildBuying extends AbstractTest {
   // @Test
   public void testCanBuyResourcesWithDiscount() throws Exception {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_OK_DISCOUNTED);
-    when(TestCheckCanBuildBuying.CURRENT.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
+    when(TestCheckCanBuildSubprocessBuying.CURRENT.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
         new Answer<Integer>() {
           @Override
           public Integer answer(InvocationOnMock invocation) throws Throwable {
@@ -182,7 +182,7 @@ public class TestCheckCanBuildBuying extends AbstractTest {
             return buy * 2;
           }
         });
-    when(TestCheckCanBuildBuying.CURRENT.getWonder().getDiscount(any(Scope.class))).thenReturn(-1);
+    when(TestCheckCanBuildSubprocessBuying.CURRENT.getWonder().getDiscount(any(Scope.class))).thenReturn(-1);
     this.checkCanBuy.execute(this.execution);
     assertEquals(true, this.result);
   }

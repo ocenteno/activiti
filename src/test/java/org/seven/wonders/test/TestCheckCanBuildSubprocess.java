@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.seven.wonders.tokens.Cost;
 import org.seven.wonders.tokens.Production;
 
-public class TestCheckCanBuild extends AbstractTest {
+public class TestCheckCanBuildSubprocess extends AbstractTest {
 
   private static final Cost DONT_HAVE_ENOUGH_GOLD_COST = new Cost(2, STONE);
 
@@ -36,7 +36,7 @@ public class TestCheckCanBuild extends AbstractTest {
     DONT_HAVE_OR_RESOURCES_TO_BUY_PROD.addOr(CLAY, STONE);
   }
 
-  public TestCheckCanBuild() {
+  public TestCheckCanBuildSubprocess() {
     super("check-can-build");
   }
 

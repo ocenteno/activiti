@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/partida">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/partida">
   <process id="simulador7wonders" name="Simulador 7 Wonders" isExecutable="true">
     <startEvent id="sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD" activiti:initiator="initiator"></startEvent>
-    <callActivity id="init" name="Initialize" calledElement="inicializar">
+    <callActivity id="init" name="Initialize" calledElement="initialize">
       <extensionElements>
         <activiti:in source="initiator" target="initiator"></activiti:in>
         <activiti:out source="result" target="game"></activiti:out>
       </extensionElements>
     </callActivity>
-    <callActivity id="prepare" name="Preparation of the Game" calledElement="preparacion">
+    <callActivity id="prepare" name="Preparation of the Game" calledElement="prepare">
       <extensionElements>
         <activiti:in source="game" target="game"></activiti:in>
       </extensionElements>
