@@ -22,9 +22,9 @@ public class Game implements Serializable {
 
   private List<Player> players;
 
-  private List<Card> discardedCards = new ArrayList<>(this.players.size() * 5);
+  private List<Card> discardedCards;
 
-  private List<Leader> discardedLeaders = new ArrayList<>(this.players.size() * 2);
+  private List<Leader> discardedLeaders;
 
   private int current;
 
@@ -55,26 +55,27 @@ public class Game implements Serializable {
     return firstPlayer().getHand().size() == 1;
   }
 
-  public void random(int numJugadores) {
-    this.players = new ArrayList<Player>(numJugadores);
+  public void random(int numPlayers) {
+    initializeDiscardPiles(numPlayers);
+    this.players = new ArrayList<Player>(numPlayers);
     if (this.thrones) {
-      giveWonder(WondersFactory.randomThrones(numJugadores));
+      giveWonder(WondersFactory.randomThrones(numPlayers));
     } else {
       if (this.leaders) {
         if (this.cities) {
-          giveWonder(WondersFactory.randomCities(numJugadores));
+          giveWonder(WondersFactory.randomCities(numPlayers));
         } else {
-          giveWonder(WondersFactory.randomLeaders(numJugadores));
+          giveWonder(WondersFactory.randomLeaders(numPlayers));
         }
       } else {
-        giveWonder(WondersFactory.randomBasic(numJugadores));
+        giveWonder(WondersFactory.randomBasic(numPlayers));
       }
     }
   }
 
-  private void giveWonder(List<Wonder> maravillas) {
-    if (maravillas != null) {
-      for (Wonder wonder : maravillas) {
+  private void giveWonder(List<Wonder> wonders) {
+    if (wonders != null) {
+      for (Wonder wonder : wonders) {
         this.players.add(new Player(wonder));
       }
     }
@@ -82,9 +83,9 @@ public class Game implements Serializable {
 
   public void discard(Card card) {
     if (card instanceof Leader) {
-      this.discardedLeaders.add((Leader)card);
+      getDiscardedLeaders().add((Leader)card);
     } else {
-      this.discardedCards.add(card);
+      getDiscardedCards().add(card);
     }
   }
 
@@ -120,12 +121,16 @@ public class Game implements Serializable {
 
   public Player leftOf(Player current) {
     this.current = this.players.indexOf(current);
-    return previousPlayer();
+    Player left = previousPlayer();
+    nextPlayer(); // recover current
+    return left;
   }
 
   public Player rightOf(Player current) {
     this.current = this.players.indexOf(current);
-    return nextPlayer();
+    Player right = nextPlayer();
+    previousPlayer();
+    return right;
   }
 
   public Map<Scope, List<Player>> getPlayersByScope(Player currentPlayer) {
@@ -141,6 +146,11 @@ public class Game implements Serializable {
     result.put(Scope.BANK, Arrays.asList(BANK));
     result.put(Scope.OTHERS, otherPlayers);
     return result;
+  }
+
+  public void initializeDiscardPiles(int numPlayers) {
+    this.discardedCards = new ArrayList<>(numPlayers * 5);
+    this.discardedLeaders = new ArrayList<>(numPlayers * 2);
   }
 
 }

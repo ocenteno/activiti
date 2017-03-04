@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/age">
-  <process id="era" name="Ejecutar una Era" isExecutable="true">
+  <process id="age" name="Execution of an Age" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <scriptTask id="elegir-carta" name="Construir" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
@@ -47,6 +47,7 @@ execution.setVariable("cards", cards)</script>
     <sequenceFlow id="flow12" sourceRef="invocar-lider" targetRef="preparar-mazo"></sequenceFlow>
     <callActivity id="choose-card" name="Elegir Carta" calledElement="elegir">
       <extensionElements>
+        <activiti:in source="game" target="game"></activiti:in>
         <activiti:in source="current" target="current"></activiti:in>
         <activiti:in sourceExpression="false" target="chooseLeaders"></activiti:in>
       </extensionElements>
@@ -54,8 +55,8 @@ execution.setVariable("cards", cards)</script>
     </callActivity>
     <sequenceFlow id="flow13" sourceRef="choose-card" targetRef="elegir-carta"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_era">
-    <bpmndi:BPMNPlane bpmnElement="era" id="BPMNPlane_era">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_age">
+    <bpmndi:BPMNPlane bpmnElement="age" id="BPMNPlane_age">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="124.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/init">
   <process id="inicializar" name="Inicializar Partida 7 Wonders" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
-    <userTask id="formulario" name="Formulario" activiti:assignee="${initiator}">
+    <userTask id="init-form" name="Init Form" activiti:assignee="${initiator}">
       <extensionElements>
         <activiti:formProperty id="numPlayers" name="Numero de Jugadores" type="long" required="true"></activiti:formProperty>
         <activiti:formProperty id="leaders" name="Jugar con Lideres" type="boolean" required="true"></activiti:formProperty>
@@ -13,39 +13,41 @@
         <activiti:formProperty id="teams" name="Jugar por Equipos" type="boolean" required="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
-    <scriptTask id="crear-partida" name="Crear Partida" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="init-game" name="Create Game" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>println "Inicializando partida para ${numPlayers} jugadores"
-execution.setVariable("game", org.seven.wonders.game.Game.processParameters(leaders, cities, babel, projects, thrones, teams))
+def game = org.seven.wonders.game.Game.processParameters(leaders, cities, babel, projects, thrones, teams)
+//game.initializeDiscardPiles(numPlayers);
+execution.setVariable("game", game)
 </script>
     </scriptTask>
     <endEvent id="endevent1" name="End"></endEvent>
-    <sequenceFlow id="flow3" sourceRef="formulario" targetRef="crear-partida"></sequenceFlow>
-    <sequenceFlow id="flow5" sourceRef="startevent1" targetRef="formulario"></sequenceFlow>
-    <serviceTask id="elegir-maravillas" name="Elegir Maravillas" activiti:class="org.seven.wonders.wonders.WondersFactory">
+    <sequenceFlow id="flow3" sourceRef="init-form" targetRef="init-game"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="startevent1" targetRef="init-form"></sequenceFlow>
+    <serviceTask id="randomize-wonders" name="Randomize Wonders" activiti:class="org.seven.wonders.wonders.WondersFactory">
       <extensionElements>
         <activiti:field name="parameter">
           <activiti:expression><![CDATA[${numPlayers}]]></activiti:expression>
         </activiti:field>
       </extensionElements>
     </serviceTask>
-    <sequenceFlow id="flow8" sourceRef="crear-partida" targetRef="elegir-maravillas"></sequenceFlow>
-    <sequenceFlow id="flow9" sourceRef="elegir-maravillas" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="init-game" targetRef="randomize-wonders"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="randomize-wonders" targetRef="endevent1"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_inicializar">
     <bpmndi:BPMNPlane bpmnElement="inicializar" id="BPMNPlane_inicializar">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="100.0" y="121.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="formulario" id="BPMNShape_formulario">
+      <bpmndi:BPMNShape bpmnElement="init-form" id="BPMNShape_init-form">
         <omgdc:Bounds height="80.0" width="105.0" x="190.0" y="98.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="crear-partida" id="BPMNShape_crear-partida">
+      <bpmndi:BPMNShape bpmnElement="init-game" id="BPMNShape_init-game">
         <omgdc:Bounds height="80.0" width="105.0" x="342.0" y="99.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="652.0" y="122.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="elegir-maravillas" id="BPMNShape_elegir-maravillas">
+      <bpmndi:BPMNShape bpmnElement="randomize-wonders" id="BPMNShape_randomize-wonders">
         <omgdc:Bounds height="80.0" width="105.0" x="492.0" y="100.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">

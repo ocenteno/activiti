@@ -10,12 +10,9 @@ import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.test.Deployment;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.seven.wonders.tokens.Cost;
 import org.seven.wonders.tokens.Production;
 
-@RunWith(MockitoJUnitRunner.class)
 public class TestCheckCanBuild extends AbstractTest {
 
   private static final Cost DONT_HAVE_ENOUGH_GOLD_COST = new Cost(2, STONE);
@@ -29,8 +26,6 @@ public class TestCheckCanBuild extends AbstractTest {
   private static final Cost HAVE_OR_RESOURCES_TO_BUY_COST = new Cost(2, ORE, ORE, WOOD, STONE);
 
   private static final Production HAVE_OR_RESOURCES_TO_BUY_PROD = new Production(3, ORE, WOOD);
-
-  private static final Cost DONT_HAVE_OR_RESOURCES_TO_BUY_COST = new Cost(CLAY, CLAY, CLAY, STONE);
 
   private static final Production DONT_HAVE_OR_RESOURCES_TO_BUY_PROD = new Production(ORE);
 
@@ -84,14 +79,4 @@ public class TestCheckCanBuild extends AbstractTest {
     assertEquals(true, ((VariableScope)this.processInstance).getVariable("canBuild"));
   }
 
-  @Test
-  @Deployment(resources = { "diagrams/CheckCanBuild.bpmn", "diagrams/CompareNeedHave.bpmn" })
-  public void testDontHaveOrResourcesToBuy() {
-    Map<String, Object> variableMap = new HashMap<String, Object>();
-    variableMap.put("cost", DONT_HAVE_OR_RESOURCES_TO_BUY_COST);
-    variableMap.put("prod", DONT_HAVE_OR_RESOURCES_TO_BUY_PROD);
-    this.processInstance = this.runtimeService.startProcessInstanceByKey(this.name, variableMap);
-    assertTrue(this.processInstance instanceof VariableScope);
-    assertEquals(false, ((VariableScope)this.processInstance).getVariable("canBuild"));
-  }
 }

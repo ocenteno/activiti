@@ -10,15 +10,16 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.junit.Test;
+import org.seven.wonders.game.Game;
 
 public class TestPreparacion extends AbstractTest {
+
+  private Game game = Game.processParameters(false, false, false, false, true, false);
 
   public TestPreparacion() {
     super("preparacion");
   }
 
-  @Test
   @Deployment(resources = { "diagrams/Preparacion.bpmn" })
   public void preparar() throws Exception {
     try {
@@ -27,7 +28,7 @@ public class TestPreparacion extends AbstractTest {
           taskService.createTaskQuery().taskDefinitionKey(this.processInstance.getActivityId()).singleResult();
       assertEquals("coger-monedas", formulario.getName());
       Map<String, Object> variableMap = new HashMap<String, Object>();
-      variableMap.put("name", "Activiti");
+      variableMap.put("game", this.game);
       ProcessInstance processInstance = this.runtimeService.startProcessInstanceByKey("preparacion", variableMap);
       assertNotNull(processInstance.getId());
       System.out.println("id " + processInstance.getId() + " " + processInstance.getProcessDefinitionId());

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/repartir">
-  <process id="repartir" name="Repartir Cartas" isExecutable="true">
+  <process id="repartir" name="Distribute Cards" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
-    <scriptTask id="ejecutar-reparto" name="Ejecutar Reparto" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="distribute-cards" name="Distribute Cards" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>Collections.shuffle(cards)
 cards.each {
 	game.nextPlayer().add(it)
 }</script>
     </scriptTask>
-    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="ejecutar-reparto"></sequenceFlow>
-    <sequenceFlow id="flow2" sourceRef="ejecutar-reparto" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="distribute-cards"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="distribute-cards" targetRef="endevent1"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_repartir">
     <bpmndi:BPMNPlane bpmnElement="repartir" id="BPMNPlane_repartir">
@@ -20,7 +20,7 @@ cards.each {
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="560.0" y="150.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="ejecutar-reparto" id="BPMNShape_ejecutar-reparto">
+      <bpmndi:BPMNShape bpmnElement="distribute-cards" id="BPMNShape_distribute-cards">
         <omgdc:Bounds height="71.0" width="121.0" x="350.0" y="132.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">

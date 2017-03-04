@@ -9,26 +9,25 @@ import org.activiti.engine.test.Deployment;
 import org.junit.Test;
 
 public class TestInicializar extends AbstractTest {
-	
-	public TestInicializar() {
-		super("inicializar");
-	}
 
-	@Test
-	@Deployment(resources = {"diagrams/Inicializacion.bpmn"})
-	public void testProcess(){
-		TaskService taskService = activitiRule.getTaskService();
-		Task formulario = taskService.createTaskQuery()
-				.taskDefinitionKey(processInstance.getActivityId())
-				.singleResult();
-		assertEquals("Formulario", formulario.getName());
+  public TestInicializar() {
+    super("inicializar");
+  }
 
-		introducirConfiguracionPorDefecto(taskService, formulario);
+  @Test
+  @Deployment(resources = { "diagrams/Inicializacion.bpmn" })
+  public void testProcess() {
+    TaskService taskService = this.activitiRule.getTaskService();
+    Task formulario =
+        taskService.createTaskQuery().taskDefinitionKey(this.processInstance.getActivityId()).singleResult();
+    assertEquals("Init Form", formulario.getName());
 
-		HistoricProcessInstance historicProcessInstance = getHistoricProcessInstance();
-		assertNotNull(historicProcessInstance);
-		
-		updateProcessInstance();		
-		assertNull(processInstance);
-	}
+    introducirConfiguracionPorDefecto(taskService, formulario);
+
+    HistoricProcessInstance historicProcessInstance = getHistoricProcessInstance();
+    assertNotNull(historicProcessInstance);
+
+    updateProcessInstance();
+    assertNull(this.processInstance);
+  }
 }

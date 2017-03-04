@@ -30,12 +30,13 @@ public class CheckCanBuy implements JavaDelegate {
     // 1) GET PROCESS VARIABLES
     Player currentPlayer = (Player)this.player.getValue(execution);
     Game game = (Game)execution.getVariable("game");
-    Cost cost = (Cost)this.costLeft.getValue(execution);
+    // Cost cost = (Cost)this.costLeft.getValue(execution);
     // 2) INITIALIZE INTERNAL VARIABLES
-    int[] need = getNeeds(cost);
+    Object value = this.costLeft.getValue(execution);
+    int[] need = (value instanceof Cost) ? getNeeds((Cost)value) : (int[])value;
     boolean canBuy = true;
     Payment payByScope = new Payment();
-    Resource[] keys = new Resource[] { ORE, WOOD, STONE, CLAY, GLASS, PAPYRUS, TEXTILE };
+    Resource[] keys = new Resource[] { WOOD, ORE, CLAY, STONE, TEXTILE, GLASS, PAPYRUS };
     Map<Scope, int[][]> resourcesByScope = getResourcesByScope(game, currentPlayer);
     // FOR EACH RESOURCE
     for (int i = 0; i < keys.length && canBuy; i++) {
@@ -74,8 +75,8 @@ public class CheckCanBuy implements JavaDelegate {
   }
 
   private int[] getNeeds(Cost c) {
-    return new int[] { c.getOres(), c.getStones(), c.getWoods(), c.getClays(), c.getGlasses(), c.getPapyruses(),
-        c.getTextiles() };
+    return new int[] { c.getWoods(), c.getOres(), c.getClays(), c.getStones(), c.getTextiles(), c.getGlasses(),
+        c.getPapyruses() };
   }
 
   private Map<Scope, int[][]> getResources(Map<Scope, List<Player>> players) {
@@ -95,10 +96,10 @@ public class CheckCanBuy implements JavaDelegate {
   }
 
   private int[] getResources(Player p) {
-    return new int[] { p.getWonder().getProduces().getOres(), p.getWonder().getProduces().getStones(),
-        p.getWonder().getProduces().getWoods(), p.getWonder().getProduces().getClays(),
-        p.getWonder().getProduces().getGlasses(), p.getWonder().getProduces().getPapyruses(),
-        p.getWonder().getProduces().getTextiles() };
+    return new int[] { p.getWonder().getProduces().getWoods(), p.getWonder().getProduces().getOres(),
+        p.getWonder().getProduces().getClays(), p.getWonder().getProduces().getStones(),
+        p.getWonder().getProduces().getTextiles(), p.getWonder().getProduces().getGlasses(),
+        p.getWonder().getProduces().getPapyruses() };
   }
 
 }

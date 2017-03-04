@@ -3,7 +3,6 @@ package org.seven.wonders.test;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
-import static org.seven.wonders.effects.CommercialEffect.*;
 import static org.seven.wonders.tokens.Resource.*;
 
 import java.util.Arrays;
@@ -20,7 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.seven.wonders.effects.CommercialEffect;
 import org.seven.wonders.effects.Condition.Scope;
 import org.seven.wonders.game.Game;
 import org.seven.wonders.game.Player;
@@ -49,12 +47,6 @@ public class TestCheckCanBuy {
   private static final Cost COST_OK_1_COIN = new Cost(ORE, WOOD, STONE, CLAY);
 
   private static final Cost COST_OK_DISCOUNTED = new Cost(ORE, STONE, CLAY, ORE);
-
-  private static final Cost HAVE_OR_RESOURCES_TO_BUY_COST = new Cost(2, ORE, ORE, WOOD, STONE);
-
-  private static final Cost DONT_HAVE_OR_RESOURCES_TO_BUY_COST = new Cost(CLAY, CLAY, CLAY, STONE);
-
-  private static final List<CommercialEffect> BUY_SIDES_2G = Arrays.asList(BUY_LEFT_2, BUY_RIGHT_2);
 
   private Game game = mock(Game.class);
 

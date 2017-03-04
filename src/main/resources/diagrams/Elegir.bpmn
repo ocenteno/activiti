@@ -3,10 +3,10 @@
   <process id="elegir" name="Elegir Carta" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
-    <scriptTask id="eliminar-elegida" name="Eliminar Elegida" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="remove-chosen" name="Remove Chosen" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>current.hand.remove(current.cardToPlay)</script>
     </scriptTask>
-    <sequenceFlow id="flow2" sourceRef="eliminar-elegida" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="remove-chosen" targetRef="endevent1"></sequenceFlow>
     <subProcess id="choose-card-and-action" name="Choose Card &amp; Action">
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${options}" activiti:elementVariable="card">
         <completionCondition>${current.cardToPlay != null}</completionCondition>
@@ -22,7 +22,7 @@ execution.setVariable("betterSell", false)</script>
         <conditionExpression xsi:type="tFormalExpression"><![CDATA[${betterSell==true}]]></conditionExpression>
       </sequenceFlow>
       <scriptTask id="sell" name="Sell" scriptFormat="groovy" activiti:autoStoreVariables="false">
-        <script>current.actionToPlay=SELL</script>
+        <script>current.actionToPlay="SELL"</script>
       </scriptTask>
       <sequenceFlow id="flow13" sourceRef="sell" targetRef="choose-card-to-use"></sequenceFlow>
       <sequenceFlow id="flow14" sourceRef="choose-card-to-use" targetRef="end-subprocess"></sequenceFlow>
@@ -44,9 +44,10 @@ current.cardToPlay=card</script>
       <sequenceFlow id="is-wonder" name="Is Wonder" sourceRef="exclusivegateway3" targetRef="choose-card-to-use"></sequenceFlow>
       <callActivity id="check-can-buil" name="Can Build Card?" default="cannot-build" calledElement="check-can-build">
         <extensionElements>
-          <activiti:in source="current.wonder.produces" target="prod"></activiti:in>
-          <activiti:in source="card.cost" target="cost"></activiti:in>
           <activiti:in source="current" target="current"></activiti:in>
+          <activiti:in source="game" target="game"></activiti:in>
+          <activiti:in sourceExpression="${current.wonder.produces}" target="prod"></activiti:in>
+          <activiti:in sourceExpression="${card.cost}" target="cost"></activiti:in>
           <activiti:out source="canBuild" target="canBuild"></activiti:out>
         </extensionElements>
       </callActivity>
@@ -56,7 +57,7 @@ current.cardToPlay=card</script>
       </sequenceFlow>
       <sequenceFlow id="cannot-build" name="No" sourceRef="check-can-buil" targetRef="choose-card-to-use"></sequenceFlow>
     </subProcess>
-    <scriptTask id="ordenar-cartas" name="Ordenar Cartas" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="sort-cards" name="Sort Cards" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>if(chooseLeaders==true){
 	Collections.sort(current.hand, current.wonder.comparator)
 }else{
@@ -65,8 +66,8 @@ current.cardToPlay=card</script>
 	execution.setVariable("options", options)
 }</script>
     </scriptTask>
-    <sequenceFlow id="flow7" sourceRef="startevent1" targetRef="ordenar-cartas"></sequenceFlow>
-    <sequenceFlow id="flow16" sourceRef="choose-card-and-action" targetRef="eliminar-elegida"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="startevent1" targetRef="sort-cards"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="choose-card-and-action" targetRef="remove-chosen"></sequenceFlow>
     <exclusiveGateway id="choose-leader-gateway" name="Choose Leader Gateway" default="no-leader"></exclusiveGateway>
     <sequenceFlow id="no-leader" name="No" sourceRef="choose-leader-gateway" targetRef="choose-card-and-action"></sequenceFlow>
     <sequenceFlow id="is-leader" name="Si" sourceRef="choose-leader-gateway" targetRef="choose-leader">
@@ -77,7 +78,7 @@ current.cardToPlay=card</script>
 current.leaders.add(card)
 current.hand.remove(card)</script>
     </scriptTask>
-    <sequenceFlow id="flow19" name="Choosing Leaders ?" sourceRef="ordenar-cartas" targetRef="choose-leader-gateway"></sequenceFlow>
+    <sequenceFlow id="flow19" name="Choosing Leaders ?" sourceRef="sort-cards" targetRef="choose-leader-gateway"></sequenceFlow>
     <sequenceFlow id="flow20" sourceRef="choose-leader" targetRef="endevent1"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_elegir">
@@ -88,7 +89,7 @@ current.hand.remove(card)</script>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="163.0" y="427.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="eliminar-elegida" id="BPMNShape_eliminar-elegida">
+      <bpmndi:BPMNShape bpmnElement="remove-chosen" id="BPMNShape_remove-chosen">
         <omgdc:Bounds height="71.0" width="121.0" x="120.0" y="494.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="choose-card-and-action" id="BPMNShape_choose-card-and-action">
@@ -121,7 +122,7 @@ current.hand.remove(card)</script>
       <bpmndi:BPMNShape bpmnElement="check-can-buil" id="BPMNShape_check-can-buil">
         <omgdc:Bounds height="71.0" width="121.0" x="480.0" y="80.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="ordenar-cartas" id="BPMNShape_ordenar-cartas">
+      <bpmndi:BPMNShape bpmnElement="sort-cards" id="BPMNShape_sort-cards">
         <omgdc:Bounds height="71.0" width="121.0" x="120.0" y="125.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="choose-leader-gateway" id="BPMNShape_choose-leader-gateway">

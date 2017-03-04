@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/preparare">
-  <process id="preparacion" name="Preparar Partida 7 Wonders" isExecutable="true">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/prepare">
+  <process id="preparacion" name="Prepare 7 Wonders Game" isExecutable="true">
     <startEvent id="inicio" name="Start"></startEvent>
-    <sequenceFlow id="flow1" sourceRef="inicio" targetRef="coger-monedas"></sequenceFlow>
+    <sequenceFlow id="flow1" sourceRef="inicio" targetRef="give-coins"></sequenceFlow>
     <endEvent id="endevent1" name="End"></endEvent>
-    <sequenceFlow id="juego-sin-lideres" sourceRef="gateway-juego-con-lideres" targetRef="endevent1"></sequenceFlow>
-    <scriptTask id="coger-monedas" name="Coger monedas" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <sequenceFlow id="playing-without-leaders" sourceRef="gateway-juego-con-lideres" targetRef="endevent1"></sequenceFlow>
+    <scriptTask id="give-coins" name="Give coins to each player" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>def monedas = org.seven.wonders.effects.Effect.coins(game.leaders || game.thrones ? 6 : 3);
 game.players.each { 
 	it.wonder.apply(monedas);
 }</script>
     </scriptTask>
-    <scriptTask id="invocar-maravilla" name="Invocar Maravilla" scriptFormat="groovy" activiti:autoStoreVariables="false">
+    <scriptTask id="call-wonder" name="Call Wonder Power" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
       <script>def efecto = current.wonder.invoke();
 if(efecto != null){ 
@@ -20,36 +20,36 @@ if(efecto != null){
 }
 </script>
     </scriptTask>
-    <sequenceFlow id="flow3" sourceRef="coger-monedas" targetRef="invocar-maravilla"></sequenceFlow>
-    <sequenceFlow id="flow4" sourceRef="shuffle-leaders" targetRef="repartir-lideres"></sequenceFlow>
-    <callActivity id="repartir-lideres" name="Repartir Lideres" calledElement="repartir">
+    <sequenceFlow id="flow3" sourceRef="give-coins" targetRef="call-wonder"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="shuffle-leaders" targetRef="distribute-leaders"></sequenceFlow>
+    <callActivity id="distribute-leaders" name="Distribute Leaders" calledElement="repartir">
       <extensionElements>
         <activiti:in source="game" target="game"></activiti:in>
         <activiti:in source="cards" target="cards"></activiti:in>
       </extensionElements>
     </callActivity>
-    <serviceTask id="shuffle-leaders" name="Barajar Lideres" activiti:class="org.seven.wonders.leaders.LeadersFactory"></serviceTask>
-    <sequenceFlow id="juego-con-lideres" name="Juego con Lideres" sourceRef="gateway-juego-con-lideres" targetRef="shuffle-leaders">
+    <serviceTask id="shuffle-leaders" name="Shuffle Leaders" activiti:class="org.seven.wonders.leaders.LeadersFactory"></serviceTask>
+    <sequenceFlow id="playing-with-leaders" name="Playing with Leaders" sourceRef="gateway-juego-con-lideres" targetRef="shuffle-leaders">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.leaders || game.thrones}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow6" sourceRef="repartir-lideres" targetRef="elegir-lider"></sequenceFlow>
-    <serviceTask id="pasar-lideres" name="Pasar Lideres" activiti:class="org.seven.wonders.services.PasarCartas">
+    <sequenceFlow id="flow6" sourceRef="distribute-leaders" targetRef="choose-leader"></sequenceFlow>
+    <serviceTask id="hand-out-leaders" name="Hand Out Leaders" activiti:class="org.seven.wonders.services.PasarCartas">
       <extensionElements>
         <activiti:field name="currentAge">
           <activiti:expression><![CDATA[0]]></activiti:expression>
         </activiti:field>
       </extensionElements>
     </serviceTask>
-    <sequenceFlow id="flow7" sourceRef="elegir-lider" targetRef="pasar-lideres"></sequenceFlow>
-    <sequenceFlow id="fin-lideres" sourceRef="gateway-seleccion-lideres" targetRef="endevent1"></sequenceFlow>
-    <sequenceFlow id="flow9" sourceRef="invocar-maravilla" targetRef="gateway-juego-con-lideres"></sequenceFlow>
-    <exclusiveGateway id="gateway-juego-con-lideres" name="Gateway Juego con Lideres" default="juego-sin-lideres"></exclusiveGateway>
-    <exclusiveGateway id="gateway-seleccion-lideres" name="Gateway Seleccion Lideres" default="fin-lideres"></exclusiveGateway>
-    <sequenceFlow id="flow10" sourceRef="pasar-lideres" targetRef="gateway-seleccion-lideres"></sequenceFlow>
-    <sequenceFlow id="quedan-lideres" name="Quedan Lideres" sourceRef="gateway-seleccion-lideres" targetRef="elegir-lider">
+    <sequenceFlow id="flow7" sourceRef="choose-leader" targetRef="hand-out-leaders"></sequenceFlow>
+    <sequenceFlow id="end-leaders-distribution" sourceRef="gateway-seleccion-lideres" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="call-wonder" targetRef="gateway-juego-con-lideres"></sequenceFlow>
+    <exclusiveGateway id="gateway-juego-con-lideres" name="Gateway Juego con Lideres"></exclusiveGateway>
+    <exclusiveGateway id="gateway-seleccion-lideres" name="Gateway Seleccion Lideres"></exclusiveGateway>
+    <sequenceFlow id="flow10" sourceRef="hand-out-leaders" targetRef="gateway-seleccion-lideres"></sequenceFlow>
+    <sequenceFlow id="are-leaders-left" name="There are leaders left to choose" sourceRef="gateway-seleccion-lideres" targetRef="choose-leader">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.players[0].hand.size() != 0}]]></conditionExpression>
     </sequenceFlow>
-    <callActivity id="elegir-lider" name="Elegir Lider" calledElement="elegir">
+    <callActivity id="choose-leader" name="Choose A Leader" calledElement="elegir">
       <extensionElements>
         <activiti:in source="current" target="current"></activiti:in>
         <activiti:in sourceExpression="true" target="chooseLeaders"></activiti:in>
@@ -65,19 +65,19 @@ if(efecto != null){
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="544.0" y="60.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="coger-monedas" id="BPMNShape_coger-monedas">
+      <bpmndi:BPMNShape bpmnElement="give-coins" id="BPMNShape_give-coins">
         <omgdc:Bounds height="71.0" width="141.0" x="170.0" y="182.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="invocar-maravilla" id="BPMNShape_invocar-maravilla">
+      <bpmndi:BPMNShape bpmnElement="call-wonder" id="BPMNShape_call-wonder">
         <omgdc:Bounds height="71.0" width="141.0" x="350.0" y="182.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="repartir-lideres" id="BPMNShape_repartir-lideres">
+      <bpmndi:BPMNShape bpmnElement="distribute-leaders" id="BPMNShape_distribute-leaders">
         <omgdc:Bounds height="71.0" width="141.0" x="690.0" y="312.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="shuffle-leaders" id="BPMNShape_shuffle-leaders">
         <omgdc:Bounds height="71.0" width="141.0" x="491.0" y="312.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="pasar-lideres" id="BPMNShape_pasar-lideres">
+      <bpmndi:BPMNShape bpmnElement="hand-out-leaders" id="BPMNShape_hand-out-leaders">
         <omgdc:Bounds height="71.0" width="141.0" x="890.0" y="182.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="gateway-juego-con-lideres" id="BPMNShape_gateway-juego-con-lideres">
@@ -86,14 +86,14 @@ if(efecto != null){
       <bpmndi:BPMNShape bpmnElement="gateway-seleccion-lideres" id="BPMNShape_gateway-seleccion-lideres">
         <omgdc:Bounds height="40.0" width="40.0" x="940.0" y="100.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="elegir-lider" id="BPMNShape_elegir-lider">
+      <bpmndi:BPMNShape bpmnElement="choose-leader" id="BPMNShape_choose-leader">
         <omgdc:Bounds height="71.0" width="141.0" x="690.0" y="182.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
         <omgdi:waypoint x="115.0" y="217.0"></omgdi:waypoint>
         <omgdi:waypoint x="170.0" y="217.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="juego-sin-lideres" id="BPMNEdge_juego-sin-lideres">
+      <bpmndi:BPMNEdge bpmnElement="playing-without-leaders" id="BPMNEdge_playing-without-leaders">
         <omgdi:waypoint x="561.0" y="197.0"></omgdi:waypoint>
         <omgdi:waypoint x="561.0" y="95.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
@@ -105,7 +105,7 @@ if(efecto != null){
         <omgdi:waypoint x="632.0" y="347.0"></omgdi:waypoint>
         <omgdi:waypoint x="690.0" y="347.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="juego-con-lideres" id="BPMNEdge_juego-con-lideres">
+      <bpmndi:BPMNEdge bpmnElement="playing-with-leaders" id="BPMNEdge_playing-with-leaders">
         <omgdi:waypoint x="561.0" y="237.0"></omgdi:waypoint>
         <omgdi:waypoint x="561.0" y="312.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
@@ -120,7 +120,7 @@ if(efecto != null){
         <omgdi:waypoint x="831.0" y="217.0"></omgdi:waypoint>
         <omgdi:waypoint x="890.0" y="217.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="fin-lideres" id="BPMNEdge_fin-lideres">
+      <bpmndi:BPMNEdge bpmnElement="end-leaders-distribution" id="BPMNEdge_end-leaders-distribution">
         <omgdi:waypoint x="960.0" y="100.0"></omgdi:waypoint>
         <omgdi:waypoint x="959.0" y="77.0"></omgdi:waypoint>
         <omgdi:waypoint x="579.0" y="77.0"></omgdi:waypoint>
@@ -133,12 +133,12 @@ if(efecto != null){
         <omgdi:waypoint x="960.0" y="182.0"></omgdi:waypoint>
         <omgdi:waypoint x="960.0" y="140.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="quedan-lideres" id="BPMNEdge_quedan-lideres">
+      <bpmndi:BPMNEdge bpmnElement="are-leaders-left" id="BPMNEdge_are-leaders-left">
         <omgdi:waypoint x="940.0" y="120.0"></omgdi:waypoint>
         <omgdi:waypoint x="760.0" y="120.0"></omgdi:waypoint>
         <omgdi:waypoint x="760.0" y="182.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="91.0" x="784.0" y="100.0"></omgdc:Bounds>
+          <omgdc:Bounds height="48.0" width="100.0" x="792.0" y="100.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

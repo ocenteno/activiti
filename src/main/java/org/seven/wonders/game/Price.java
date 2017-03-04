@@ -1,5 +1,6 @@
 package org.seven.wonders.game;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,7 +10,7 @@ import org.seven.wonders.effects.Condition.Scope;
 import org.seven.wonders.tokens.Resource;
 
 @Data
-public class Price {
+public class Price implements Serializable {
 
   // 0-3: WOOD,CLAY,STONE,ORE,
   // 4-6: TEXTILE,GLASS,PAPYRUS,
