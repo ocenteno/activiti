@@ -45,7 +45,7 @@ public class Brown extends Card {
   }
 
   public Brown(Cost coste, Resource recurso) {
-    super(Color.BROWN, Effect.resource(recurso), coste);
+    super(Color.BROWN, Effect.resources(recurso), coste);
   }
 
   private Brown(Cost coste, Resource... recursos) {

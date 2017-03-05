@@ -51,6 +51,14 @@ public class Game implements Serializable {
     }
   }
 
+  public boolean isLeaderPhaseFinished() {
+    return allCardsUsed();
+  }
+
+  public boolean allCardsUsed() {
+    return currentPlayer().getHand().size() == 0;
+  }
+
   public boolean isLastCard() {
     return firstPlayer().getHand().size() == 1;
   }

@@ -81,6 +81,10 @@ public class Condition implements Serializable {
 
   public static final Condition SIDE_DEFEATS = new Condition(Token.Type.DEFEAT, Type.TOKEN, SIDES);
 
+  public static Condition when(Object when) {
+    return new Condition(when, Type.TOKEN, ME);
+  }
+
   private final Object value;
 
   private final Type type;

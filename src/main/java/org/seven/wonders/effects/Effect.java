@@ -10,17 +10,25 @@ import org.seven.wonders.cards.Card.Color;
 import org.seven.wonders.game.Player;
 import org.seven.wonders.tokens.Resource;
 import org.seven.wonders.tokens.Science;
+import org.seven.wonders.tokens.Token;
+import org.seven.wonders.wonders.Wonder;
 
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
 public class Effect implements Serializable {
 
+  public static final Effect PLAY_LAST_CARD = new Effect(Type.PLAY_LAST_CARD, Type.PLAY_LAST_CARD);
+
   private final Type type;
 
   private final Object value;
 
   private Condition condition;
+
+  public static Effect changeWonder(int number) {
+    return new Effect(Type.WONDER, new Wonder[number]);
+  }
 
   public static Effect debt(int value) {
     return new Effect(Type.DEBT, value);
@@ -31,22 +39,22 @@ public class Effect implements Serializable {
   }
 
   public static Effect conditionedVPs(int value, Condition condicion) {
-    Effect efecto = new Effect(Type.COND_VP, value);
-    efecto.condition = condicion;
-    return efecto;
+    Effect effect = new Effect(Type.COND_VP, value);
+    effect.condition = condicion;
+    return effect;
   }
 
   public static Effect conditionedCoins(int value, Condition condicion) {
-    Effect efecto = new Effect(Type.COND_COINS, value);
-    efecto.condition = condicion;
-    return efecto;
+    Effect effect = new Effect(Type.COND_COINS, value);
+    effect.condition = condicion;
+    return effect;
   }
 
   public static Effect victoryPoints(int value) {
     return new Effect(Type.VP, value);
   }
 
-  public static Effect resource(Resource value) {
+  public static Effect resources(Resource... value) {
     return new Effect(Type.RESOURCE, value);
   }
 
@@ -60,7 +68,7 @@ public class Effect implements Serializable {
 
   public static Effect equalOrDifferentResources(Resource... resources) {
     if (resources[0] == resources[1]) {
-      return multipleResources(resources);
+      return resources(resources);
     }
     return oneOfManyResources(resources);
   }
@@ -77,12 +85,28 @@ public class Effect implements Serializable {
     return new Effect(Type.BATTLE, value);
   }
 
+  public static Effect tokens(Token... tokens) {
+    return new Effect(Type.TOKEN, tokens);
+  }
+
   public static Effect copyCard(Color value) {
     return new Effect(Type.COPY, value);
   }
 
   public static Effect copyResource() {
     return new Effect(Type.COPY, Type.RESOURCE);
+  }
+
+  public static Effect peace(int number) {
+    Token[] tokens = new Token[number];
+    for (int i = 0; i < tokens.length; i++) {
+      tokens[i] = Token.DIPLOMACY;
+    }
+    return new Effect(Type.TOKEN, tokens);
+  }
+
+  public static Effect canDuplicate(Color color) {
+    return new Effect(Type.COND_COMMERCE, color);
   }
 
   public void apply(Player jugador) {
@@ -101,6 +125,7 @@ public class Effect implements Serializable {
     RESOURCE,
     WONDER,
     COMMERCE,
+    COND_COMMERCE,
     BATTLE,
     SCIENCE,
     COINS,
@@ -112,7 +137,9 @@ public class Effect implements Serializable {
     AGGRESSION,
     TOKEN,
     TOKEN_SIDES,
-    COINS_SIDES;
+    COINS_SIDES,
+    WHEN,
+    PLAY_LAST_CARD;
   }
 
 }

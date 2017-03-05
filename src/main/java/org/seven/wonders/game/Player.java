@@ -40,6 +40,10 @@ public class Player implements Serializable {
   // this.cardToPlay = null;
   // }
 
+  public int getCoins() {
+    return getWonder().getProduces().getCoins();
+  }
+
   public void add(Card carta) {
     this.hand.add(carta);
   }

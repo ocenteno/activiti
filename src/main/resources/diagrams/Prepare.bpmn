@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulador7w/prepare">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/prepare">
   <process id="prepare" name="Prepare 7 Wonders Game" isExecutable="true">
     <startEvent id="inicio" name="Start"></startEvent>
     <sequenceFlow id="flow1" sourceRef="inicio" targetRef="give-coins"></sequenceFlow>
@@ -30,7 +30,7 @@ if(efecto != null){
     </callActivity>
     <serviceTask id="shuffle-leaders" name="Shuffle Leaders" activiti:class="org.seven.wonders.leaders.LeadersFactory"></serviceTask>
     <sequenceFlow id="playing-with-leaders" name="Playing with Leaders" sourceRef="gateway-juego-con-lideres" targetRef="shuffle-leaders">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.leaders || game.thrones}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.leaders==true || game.thrones==true}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow6" sourceRef="distribute-leaders" targetRef="choose-leader"></sequenceFlow>
     <serviceTask id="hand-out-leaders" name="Hand Out Leaders" activiti:class="org.seven.wonders.services.PasarCartas">
@@ -43,13 +43,13 @@ if(efecto != null){
     <sequenceFlow id="flow7" sourceRef="choose-leader" targetRef="hand-out-leaders"></sequenceFlow>
     <sequenceFlow id="end-leaders-distribution" sourceRef="gateway-seleccion-lideres" targetRef="endevent1"></sequenceFlow>
     <sequenceFlow id="flow9" sourceRef="call-wonder" targetRef="gateway-juego-con-lideres"></sequenceFlow>
-    <exclusiveGateway id="gateway-juego-con-lideres" name="Gateway Juego con Lideres"></exclusiveGateway>
-    <exclusiveGateway id="gateway-seleccion-lideres" name="Gateway Seleccion Lideres"></exclusiveGateway>
+    <exclusiveGateway id="gateway-juego-con-lideres" name="Gateway Juego con Lideres" default="playing-without-leaders"></exclusiveGateway>
+    <exclusiveGateway id="gateway-seleccion-lideres" name="Gateway Seleccion Lideres" default="end-leaders-distribution"></exclusiveGateway>
     <sequenceFlow id="flow10" sourceRef="hand-out-leaders" targetRef="gateway-seleccion-lideres"></sequenceFlow>
     <sequenceFlow id="are-leaders-left" name="There are leaders left to choose" sourceRef="gateway-seleccion-lideres" targetRef="choose-leader">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.players[0].hand.size() != 0}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.isLeaderPhaseFinished() == false}]]></conditionExpression>
     </sequenceFlow>
-    <callActivity id="choose-leader" name="Choose A Leader" calledElement="elegir">
+    <callActivity id="choose-leader" name="Choose A Leader" calledElement="choose-a-card">
       <extensionElements>
         <activiti:in source="current" target="current"></activiti:in>
         <activiti:in sourceExpression="true" target="chooseLeaders"></activiti:in>

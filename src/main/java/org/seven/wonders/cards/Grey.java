@@ -17,7 +17,7 @@ public class Grey extends Card {
   }
 
   public Grey(Resource recurso) {
-    super(Color.GREY, Effect.resource(recurso), Cost.FREE);
+    super(Color.GREY, Effect.resources(recurso), Cost.FREE);
   }
 
 }

@@ -45,7 +45,7 @@ def cards = org.seven.wonders.cards.CardsFactory.getCards(age, game.totalPlayers
 execution.setVariable("cards", cards)</script>
     </scriptTask>
     <sequenceFlow id="flow12" sourceRef="call-leader" targetRef="prepare-age-deck"></sequenceFlow>
-    <callActivity id="choose-card" name="Choose Card to Play" calledElement="elegir">
+    <callActivity id="choose-card" name="Choose Card to Play" calledElement="choose-a-card">
       <extensionElements>
         <activiti:in source="game" target="game"></activiti:in>
         <activiti:in source="current" target="current"></activiti:in>

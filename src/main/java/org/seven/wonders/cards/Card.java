@@ -42,7 +42,8 @@ public class Card implements Serializable {
     GREEN,
     BLACK,
     GUILD,
-    LEADER
+    LEADER,
+    ANY
   }
 
   protected static void setNames(Field[] declaredFields) {

@@ -1,11 +1,6 @@
 package org.seven.wonders.leaders;
 
-import static org.seven.wonders.cards.Blue.*;
-import static org.seven.wonders.cards.Brown.*;
-import static org.seven.wonders.cards.Green.*;
-import static org.seven.wonders.cards.Grey.*;
-import static org.seven.wonders.cards.Red.*;
-import static org.seven.wonders.cards.Yellow.*;
+import static org.seven.wonders.leaders.ThronesLeader.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,21 +17,13 @@ import org.seven.wonders.game.Game;
 @Data
 public final class LeadersFactory implements JavaDelegate {
 
-  private static final List<Card> LEADERS = Arrays.asList(GLASSWORKS, LOOM, PRESS, LUMBER_YARD, CLAY_POOL, ORE_VEIN,
-      STONE_PIT, CLAY_PIT, TIMBER_YARD, EAST_TRADING_POST, WEST_TRADING_POST, MARKETPLACE, ALTAR, THEATRE, BATHS,
-      STOCKADE, BARRACKS, GUARD_TOWER, APOTHECARY, WORKSHOP, SCRIPTORIUM, // 3
-      LUMBER_YARD, ORE_VEIN, EXCAVATION, TAVERN, PAWNSHOP, GUARD_TOWER, SCRIPTORIUM, // 4
-      CLAY_POOL, STONE_PIT, FOREST_CAVE, TAVERN, ALTAR, BARRACKS, APOTHECARY, // 5
-      GLASSWORKS, LOOM, PRESS, TREE_FARM, MINE, MARKETPLACE, THEATRE, // 6
-      EAST_TRADING_POST, WEST_TRADING_POST, TAVERN, BATHS, PAWNSHOP, STOCKADE, WORKSHOP); // 7
+  private static final List<Leader> LEADERS = Arrays.asList(); // 7
 
-  private static final List<Card> THRONES = Arrays.asList(GLASSWORKS, LOOM, PRESS, BRICKYARD, FOUNDRY, QUARRY, SAWMILL,
-      FORUM, CARAVANSERY, VINEYARD, STATUE, AQUEDUCT, COURTHOUSE, TEMPLE, STABLES, WALLS, ARCHERY_RANGE, LABORATORY,
-      DISPENSARY, LIBRARY, SCHOOL, // 3
-      BRICKYARD, FOUNDRY, QUARRY, SAWMILL, BAZAR, TRAINING_GROUND, DISPENSARY, // 4
-      GLASSWORKS, LOOM, PRESS, CARAVANSERY, COURTHOUSE, STABLES, LABORATORY, // 5
-      FORUM, CARAVANSERY, VINEYARD, TEMPLE, TRAINING_GROUND, ARCHERY_RANGE, LIBRARY, // 6
-      FORUM, BAZAR, STATUE, AQUEDUCT, TRAINING_GROUND, WALLS, SCHOOL); // 7
+  private static final List<Leader> THRONES = Arrays.asList(GILLY, CRASTER, HODOR, BRANDON_STARK, MEERA_REED,
+      JOJEN_REED, BENJEN_STARK, MAG_THE_MIGHTY, RATTLESHIRT, XARO_XHOAN_DAXOS, KRAZNYS_MO_NAKLOZ, MISSANDEI,
+      TYENE_SAND, NYMERIA_SAND, OBARA_SAND, QYBURN, SAMWELL_TARLEY, MAESTER_LUWIN, JANOS_SLYNT, TORMUND_GIANTSBANE,
+      DAVOS_SEAWORTH, SALLADHOR_SAAN, LITTLEFINGER, ROBB_STARK, JAIME_LANNISTER, THE_MOUNTAIN, LORAS_TYREL,
+      TRYSTANE_MARTELL, ARYA_STARK, PYAT_PREE, AERON_GREYJOY, EURON_GERYJOY);
 
   public static List<Card> getLeaders(int jugadores, boolean thrones) {
     List<Card> mazo = new ArrayList<>(jugadores);

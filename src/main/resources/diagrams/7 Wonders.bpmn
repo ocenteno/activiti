@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/partida">
-  <process id="simulador7wonders" name="Simulador 7 Wonders" isExecutable="true">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/game">
+  <process id="seven-wonders-simulator" name="7 Wonders Simulator" isExecutable="true">
     <startEvent id="sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD" activiti:initiator="initiator"></startEvent>
     <callActivity id="init" name="Initialize" calledElement="initialize">
       <extensionElements>
@@ -59,8 +59,8 @@
     <association id="association2" sourceRef="textannotation2" targetRef="prepare"></association>
     <association id="association10" sourceRef="textannotation1" targetRef="init"></association>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_simulador7wonders">
-    <bpmndi:BPMNPlane bpmnElement="simulador7wonders" id="BPMNPlane_simulador7wonders">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_seven-wonders-simulator">
+    <bpmndi:BPMNPlane bpmnElement="seven-wonders-simulator" id="BPMNPlane_seven-wonders-simulator">
       <bpmndi:BPMNShape bpmnElement="sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD" id="BPMNShape_sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD">
         <omgdc:Bounds height="35.0" width="35.0" x="108.0" y="111.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>

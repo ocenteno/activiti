@@ -48,7 +48,7 @@ public class Black extends Card {
 
   public static final Black SPY_RING = new Black(Effect.copyCard(Color.GREEN), 2, STONE, CLAY);
 
-  public static final Black BLACK_MARKET = new Black(Effect.resource(ANY), ORE, TEXTILE);
+  public static final Black BLACK_MARKET = new Black(Effect.resources(ANY), ORE, TEXTILE);
 
   public static final Black MERCENARIES = new Black(Effect.shields(3), 4, PAPYRUS);
 

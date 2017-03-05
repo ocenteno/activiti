@@ -10,7 +10,7 @@ import org.junit.Test;
 public class Test7WondersProcess extends AbstractTest {
 
   public Test7WondersProcess() {
-    super("simulador7wonders");
+    super("seven-wonders-simulator");
   }
 
   @Test
