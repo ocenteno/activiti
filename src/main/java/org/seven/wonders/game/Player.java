@@ -25,21 +25,6 @@ public class Player implements Serializable {
 
   private List<Leader> leaders = new ArrayList<>(4);
 
-  // public void playCard() {
-  // switch (this.actionToPlay) {
-  // case BUY:
-  // this.wonder.add(this.cardToPlay);
-  // break;
-  // case SELL:
-  // this.wonder.sell(this.cardToPlay);
-  // break;
-  // case WONDER:
-  // this.wonder.level(this.cardToPlay, this.wonderLevelToPlay);
-  // break;
-  // }
-  // this.cardToPlay = null;
-  // }
-
   public int getCoins() {
     return getWonder().getProduces().getCoins();
   }

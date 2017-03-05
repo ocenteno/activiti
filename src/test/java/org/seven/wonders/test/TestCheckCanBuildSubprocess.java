@@ -15,6 +15,12 @@ import org.seven.wonders.tokens.Production;
 
 public class TestCheckCanBuildSubprocess extends AbstractTest {
 
+  private static final Cost FREE = new Cost();
+
+  private static final Cost ONLY_COINS = new Cost(2);
+
+  private static final Production HAVE_ONLY_GOLD_PROD = new Production(4);
+
   private static final Cost DONT_HAVE_ENOUGH_GOLD_COST = new Cost(2, STONE);
 
   private static final Production DONT_HAVE_ENOUGH_GOLD_PROD = new Production(1, STONE);
@@ -44,6 +50,28 @@ public class TestCheckCanBuildSubprocess extends AbstractTest {
   @Override
   public void startProcess() {
     this.runtimeService = this.activitiRule.getRuntimeService();
+  }
+
+  @Test
+  @Deployment(resources = { "diagrams/CheckCanBuild.bpmn" })
+  public void testCardForFree() {
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("cost", FREE);
+    variableMap.put("prod", HAVE_ONLY_GOLD_PROD);
+    this.processInstance = this.runtimeService.startProcessInstanceByKey(this.name, variableMap);
+    assertTrue(this.processInstance instanceof VariableScope);
+    assertEquals(true, ((VariableScope)this.processInstance).getVariable("canBuild"));
+  }
+
+  @Test
+  @Deployment(resources = { "diagrams/CheckCanBuild.bpmn" })
+  public void testCardCostingEnoughGold() {
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("cost", ONLY_COINS);
+    variableMap.put("prod", HAVE_ONLY_GOLD_PROD);
+    this.processInstance = this.runtimeService.startProcessInstanceByKey(this.name, variableMap);
+    assertTrue(this.processInstance instanceof VariableScope);
+    assertEquals(true, ((VariableScope)this.processInstance).getVariable("canBuild"));
   }
 
   @Test
