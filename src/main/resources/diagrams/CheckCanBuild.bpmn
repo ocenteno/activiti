@@ -79,25 +79,6 @@ execution.setVariable("canBuild", canBuild)</script>
         </activiti:field>
       </extensionElements>
     </serviceTask>
-    <callActivity id="compare-need-have-direct" name="Compare Need &amp; Have" default="can-build-directly" calledElement="myProcess">
-      <extensionElements>
-        <activiti:in source="need" target="need"></activiti:in>
-        <activiti:in source="have" target="have"></activiti:in>
-        <activiti:out source="canBuild" target="canBuild"></activiti:out>
-        <activiti:out source="remain" target="remain"></activiti:out>
-      </extensionElements>
-    </callActivity>
-    <callActivity id="compare-need-have-options" name="Evaluate Combinations" calledElement="compare-need-have">
-      <extensionElements>
-        <activiti:in source="remain" target="need"></activiti:in>
-        <activiti:in source="have" target="have"></activiti:in>
-        <activiti:out source="canBuild" target="canBuild"></activiti:out>
-        <activiti:out source="remain" target="remain"></activiti:out>
-      </extensionElements>
-      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="${options}" activiti:elementVariable="have">
-        <completionCondition>${canBuild==true}</completionCondition>
-      </multiInstanceLoopCharacteristics>
-    </callActivity>
     <sequenceFlow id="flow8" sourceRef="check-can-buy" targetRef="endevent1"></sequenceFlow>
     <scriptTask id="prepare-buy-variables" name="Prepare to Buy" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>execution.setVariable("remain", (int[])remain)</script>
@@ -132,12 +113,6 @@ execution.setVariable("canBuild", canBuild)</script>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="check-can-buy" id="BPMNShape_check-can-buy">
         <omgdc:Bounds height="71.0" width="121.0" x="580.0" y="430.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="compare-need-have-direct" id="BPMNShape_compare-need-have-direct">
-        <omgdc:Bounds height="71.0" width="121.0" x="210.0" y="309.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="compare-need-have-options" id="BPMNShape_compare-need-have-options">
-        <omgdc:Bounds height="71.0" width="121.0" x="210.0" y="430.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="prepare-buy-variables" id="BPMNShape_prepare-buy-variables">
         <omgdc:Bounds height="71.0" width="121.0" x="760.0" y="430.0"></omgdc:Bounds>

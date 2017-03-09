@@ -26,7 +26,7 @@ public class CheckCanBuy implements JavaDelegate {
   private Expression player;
 
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     // 1) GET PROCESS VARIABLES
     Player currentPlayer = (Player)this.player.getValue(execution);
     Game game = (Game)execution.getVariable("game");

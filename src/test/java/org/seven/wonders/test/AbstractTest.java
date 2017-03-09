@@ -59,7 +59,7 @@ public class AbstractTest {
     HistoryService historyService = this.activitiRule.getHistoryService();
     HistoricProcessInstance historicProcessInstance =
         historyService.createHistoricProcessInstanceQuery().processInstanceId(this.processInstance.getId())
-        .singleResult();
+            .singleResult();
     return historicProcessInstance;
   }
 

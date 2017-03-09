@@ -91,9 +91,9 @@ public final class WondersFactory implements JavaDelegate {
   private static final Wonder FIST_OF_THE_FIRST_MEN = FistOfTheFirstMen.WONDER;
 
   private static final Wonder[] WONDERS = new Wonder[] { ALEXANDRIA, RHODOS, HALIKARNASSOS, OLYMPIA, EPHESOS, BABYLON,
-      GIZAH, ROME, PETRA, AGIA_SOPHIA, ABU_SIMBEL, GREAT_WALL, STONEHENGE, MANNEKEN_PIS, CATAN, BRUSSELS, THE_WALL,
-      WINTERFELL, PYKE, THE_TWINS, RIVERRUN, THE_EYRE, HARRENHAL, CASTERLY_ROCK, KINGS_LANDING, STORMS_END,
-    DRAGON_STONE, HIGHGARDEN, SUNSPEAR, BRAAVOS, QARTH, MEREEN, WEIRWOOD, FIST_OF_THE_FIRST_MEN, DREADFORT };
+    GIZAH, ROME, PETRA, AGIA_SOPHIA, ABU_SIMBEL, GREAT_WALL, STONEHENGE, MANNEKEN_PIS, CATAN, BRUSSELS, THE_WALL,
+    WINTERFELL, PYKE, THE_TWINS, RIVERRUN, THE_EYRE, HARRENHAL, CASTERLY_ROCK, KINGS_LANDING, STORMS_END,
+      DRAGON_STONE, HIGHGARDEN, SUNSPEAR, BRAAVOS, QARTH, MEREEN, WEIRWOOD, FIST_OF_THE_FIRST_MEN, DREADFORT };
 
   public static List<Wonder> randomBasic(int jugadores) {
     return random(jugadores, 0, 7);
@@ -144,7 +144,7 @@ public final class WondersFactory implements JavaDelegate {
   private Expression parameter;
 
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     Game game = (Game)execution.getVariable("game");
     int numJugadores = (int)this.parameter.getValue(execution);
     game.random(numJugadores);

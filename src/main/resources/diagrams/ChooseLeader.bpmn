@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/choose/card">
-  <process id="choose-a-card" name="Choose Card" isExecutable="true">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/choose/leader">
+  <process id="choose-a-leader" name="Choose A Leader" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
     <scriptTask id="remove-chosen" name="Take chosen card" scriptFormat="groovy" activiti:autoStoreVariables="false">
@@ -44,13 +44,27 @@ current.cardToPlay=card</script>
       <sequenceFlow id="cannot-build" name="No" sourceRef="check-can-buil" targetRef="end-subprocess"></sequenceFlow>
     </subProcess>
     <scriptTask id="sort-cards" name="Sort Cards" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <script>def options = (current.hand.clone() &lt;&lt; current.wonder.nextStages).flatten()
-Collections.sort(options, current.wonder.comparator)
-execution.setVariable("options", options)
-</script>
+      <script>if(leadersDraft==true){
+	Collections.sort(current.hand, current.wonder.comparator)
+}else{
+	def options = (current.hand.clone() &lt;&lt; current.wonder.nextStages).flatten()
+	Collections.sort(options, current.wonder.comparator)
+	execution.setVariable("options", options)
+}</script>
     </scriptTask>
     <sequenceFlow id="flow7" sourceRef="startevent1" targetRef="sort-cards"></sequenceFlow>
-    <sequenceFlow id="flow19" sourceRef="sort-cards" targetRef="choose-card-and-action"></sequenceFlow>
+    <exclusiveGateway id="choose-leader-gateway" name="Choose Leader Gateway" default="no-leader"></exclusiveGateway>
+    <sequenceFlow id="no-leader" name="No" sourceRef="choose-leader-gateway" targetRef="choose-card-and-action"></sequenceFlow>
+    <sequenceFlow id="is-leader" name="Si" sourceRef="choose-leader-gateway" targetRef="choose-leader">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${leadersDraft==true}]]></conditionExpression>
+    </sequenceFlow>
+    <scriptTask id="choose-leader" name="Choose Leader" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def card = current.hand[0]
+current.leaders.add(card)
+current.hand.remove(card)</script>
+    </scriptTask>
+    <sequenceFlow id="flow19" name="Choosing Leaders ?" sourceRef="sort-cards" targetRef="choose-leader"></sequenceFlow>
+    <sequenceFlow id="flow20" sourceRef="choose-leader" targetRef="endevent1"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway" default="is-card"></exclusiveGateway>
     <sequenceFlow id="is-card" name="Is Card" sourceRef="exclusivegateway3" targetRef="remove-chosen"></sequenceFlow>
     <sequenceFlow id="is-wonder-or-sell" name="Is Wonder or Sell" sourceRef="exclusivegateway3" targetRef="remove-last-card">
@@ -69,10 +83,10 @@ execution.setVariable("options", options)
     </sequenceFlow>
     <sequenceFlow id="flow25" sourceRef="sell-random-card" targetRef="remove-last-card"></sequenceFlow>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_choose-a-card">
-    <bpmndi:BPMNPlane bpmnElement="choose-a-card" id="BPMNPlane_choose-a-card">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_choose-a-leader">
+    <bpmndi:BPMNPlane bpmnElement="choose-a-leader" id="BPMNPlane_choose-a-leader">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="211.0" y="106.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="88.0" y="109.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
         <omgdc:Bounds height="35.0" width="35.0" x="211.0" y="390.0"></omgdc:Bounds>
@@ -99,7 +113,13 @@ execution.setVariable("options", options)
         <omgdc:Bounds height="71.0" width="121.0" x="598.0" y="133.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="sort-cards" id="BPMNShape_sort-cards">
-        <omgdc:Bounds height="71.0" width="121.0" x="168.0" y="187.0"></omgdc:Bounds>
+        <omgdc:Bounds height="71.0" width="121.0" x="168.0" y="91.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="choose-leader-gateway" id="BPMNShape_choose-leader-gateway">
+        <omgdc:Bounds height="40.0" width="40.0" x="208.0" y="202.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="choose-leader" id="BPMNShape_choose-leader">
+        <omgdc:Bounds height="71.0" width="121.0" x="168.0" y="285.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway3" id="BPMNShape_exclusivegateway3">
         <omgdc:Bounds height="40.0" width="40.0" x="533.0" y="387.0"></omgdc:Bounds>
@@ -152,12 +172,33 @@ execution.setVariable("options", options)
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="228.0" y="141.0"></omgdi:waypoint>
-        <omgdi:waypoint x="228.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="123.0" y="126.0"></omgdi:waypoint>
+        <omgdi:waypoint x="168.0" y="126.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="no-leader" id="BPMNEdge_no-leader">
+        <omgdi:waypoint x="248.0" y="222.0"></omgdi:waypoint>
+        <omgdi:waypoint x="358.0" y="223.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="16.0" x="272.0" y="229.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="is-leader" id="BPMNEdge_is-leader">
+        <omgdi:waypoint x="228.0" y="242.0"></omgdi:waypoint>
+        <omgdi:waypoint x="228.0" y="285.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="12.0" x="207.0" y="249.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
-        <omgdi:waypoint x="289.0" y="222.0"></omgdi:waypoint>
-        <omgdi:waypoint x="358.0" y="223.0"></omgdi:waypoint>
+        <omgdi:waypoint x="228.0" y="162.0"></omgdi:waypoint>
+        <omgdi:waypoint x="228.0" y="285.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="48.0" width="100.0" x="241.0" y="162.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="228.0" y="356.0"></omgdi:waypoint>
+        <omgdi:waypoint x="228.0" y="390.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="is-card" id="BPMNEdge_is-card">
         <omgdi:waypoint x="533.0" y="407.0"></omgdi:waypoint>

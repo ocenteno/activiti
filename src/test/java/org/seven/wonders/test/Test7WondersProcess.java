@@ -14,8 +14,9 @@ public class Test7WondersProcess extends AbstractTest {
   }
 
   @Test
-  @Deployment(resources = { "diagrams/7 Wonders.bpmn", "diagrams/Initialize.bpmn", "diagrams/Distribute.bpmn",
-      "diagrams/Prepare.bpmn", "diagrams/Age.bpmn", "diagrams/ChooseCard.bpmn", "diagrams/CheckCanBuild.bpmn" })
+  @Deployment(resources = { "diagrams/7Wonders.bpmn", "diagrams/Initialize.bpmn", "diagrams/Distribute.bpmn",
+      "diagrams/Prepare.bpmn", "diagrams/Age.bpmn", "diagrams/PlayLeader.bpmn", "diagrams/ChooseCard.bpmn",
+      "diagrams/CheckCanBuild.bpmn" })
   public void testInicializar() {
     TaskService taskService = this.activitiRule.getTaskService();
     Task form = taskService.createTaskQuery().taskDefinitionKey(this.processInstance.getActivityId()).singleResult();

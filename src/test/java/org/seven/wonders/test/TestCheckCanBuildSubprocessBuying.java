@@ -38,7 +38,7 @@ public class TestCheckCanBuildSubprocessBuying extends AbstractTest {
 
   private static final Cost COST_OK_2_COINS = new Cost(ORE, ORE);
 
-  private static final Cost COST_KO_2_COINS = new Cost(ORE, ORE, WOOD, STONE);
+  private static final Cost COST_KO_2_COINS = new Cost(ORE, ORE, WOOD, STONE, CLAY);
 
   private static final Cost COST_OK_1_COIN = new Cost(ORE, WOOD, STONE, CLAY);
 
@@ -147,16 +147,17 @@ public class TestCheckCanBuildSubprocessBuying extends AbstractTest {
   // @Test
   public void testCanBuyResources1GoldRight() throws Exception {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_OK_1_COIN);
-    when(TestCheckCanBuildSubprocessBuying.CURRENT.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
-        new Answer<Integer>() {
-          @Override
-          public Integer answer(InvocationOnMock invocation) throws Throwable {
-            Object[] args = invocation.getArguments();
-            Scope scope = (Scope)args[1];
-            int buy = (int)args[2];
-            return buy * (scope == Scope.RIGHT ? 1 : 2);
-          }
-        });
+    when(
+        TestCheckCanBuildSubprocessBuying.CURRENT.getWonder()
+            .getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(new Answer<Integer>() {
+      @Override
+      public Integer answer(InvocationOnMock invocation) throws Throwable {
+        Object[] args = invocation.getArguments();
+        Scope scope = (Scope)args[1];
+        int buy = (int)args[2];
+        return buy * (scope == Scope.RIGHT ? 1 : 2);
+      }
+    });
     this.checkCanBuy.execute(this.execution);
     assertEquals(true, this.result);
   }
@@ -173,15 +174,16 @@ public class TestCheckCanBuildSubprocessBuying extends AbstractTest {
   // @Test
   public void testCanBuyResourcesWithDiscount() throws Exception {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_OK_DISCOUNTED);
-    when(TestCheckCanBuildSubprocessBuying.CURRENT.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
-        new Answer<Integer>() {
-          @Override
-          public Integer answer(InvocationOnMock invocation) throws Throwable {
-            Object[] args = invocation.getArguments();
-            int buy = (int)args[2];
-            return buy * 2;
-          }
-        });
+    when(
+        TestCheckCanBuildSubprocessBuying.CURRENT.getWonder()
+            .getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(new Answer<Integer>() {
+      @Override
+      public Integer answer(InvocationOnMock invocation) throws Throwable {
+        Object[] args = invocation.getArguments();
+        int buy = (int)args[2];
+        return buy * 2;
+      }
+    });
     when(TestCheckCanBuildSubprocessBuying.CURRENT.getWonder().getDiscount(any(Scope.class))).thenReturn(-1);
     this.checkCanBuy.execute(this.execution);
     assertEquals(true, this.result);

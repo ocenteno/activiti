@@ -29,8 +29,20 @@ public class Player implements Serializable {
     return getWonder().getProduces().getCoins();
   }
 
-  public void add(Card carta) {
-    this.hand.add(carta);
+  public void giveCoins(int n) {
+    this.wonder.getProduces().add(n);
+  }
+
+  public void add(Card card) {
+    this.hand.add(card);
+  }
+
+  public void playLeader() {
+
+  }
+
+  public void playCard(Game game) {
+
   }
 
   @Override

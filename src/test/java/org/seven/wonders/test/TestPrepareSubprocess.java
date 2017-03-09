@@ -10,6 +10,7 @@ import org.activiti.engine.test.Deployment;
 import org.junit.Before;
 import org.junit.Test;
 import org.seven.wonders.game.Game;
+import org.seven.wonders.wonders.Braavos;
 
 public class TestPrepareSubprocess extends AbstractTest {
 
@@ -27,7 +28,7 @@ public class TestPrepareSubprocess extends AbstractTest {
   }
 
   @Test
-  @Deployment(resources = { "diagrams/Prepare.bpmn", "diagrams/Distribute.bpmn", "diagrams/ChooseCard.bpmn" })
+  @Deployment(resources = { "diagrams/Prepare.bpmn" })
   public void testPrepareProcessWithLeaders() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("game", this.game);
@@ -36,7 +37,8 @@ public class TestPrepareSubprocess extends AbstractTest {
     assertEquals(this.game, ((VariableScope)this.processInstance).getVariable("game"));
     assertNotNull(((VariableScope)this.processInstance).getVariable("cards"));
     // 6 coins for each player
-    assertEquals(6, this.game.currentPlayer().getCoins());
+    int expected = this.game.currentPlayer().getWonder() == Braavos.WONDER ? 12 : 6;
+    assertEquals(expected, this.game.currentPlayer().getCoins());
     // Leaders distributed
     assertNotNull(this.game.currentPlayer().getLeaders());
     assertEquals(4, this.game.currentPlayer().getLeaders().size());

@@ -11,7 +11,6 @@ import lombok.Data;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.seven.wonders.cards.Card;
 import org.seven.wonders.game.Game;
 
 @Data
@@ -25,8 +24,8 @@ public final class LeadersFactory implements JavaDelegate {
       DAVOS_SEAWORTH, SALLADHOR_SAAN, LITTLEFINGER, ROBB_STARK, JAIME_LANNISTER, THE_MOUNTAIN, LORAS_TYREL,
       TRYSTANE_MARTELL, ARYA_STARK, PYAT_PREE, AERON_GREYJOY, EURON_GERYJOY);
 
-  public static List<Card> getLeaders(int jugadores, boolean thrones) {
-    List<Card> mazo = new ArrayList<>(jugadores);
+  public static List<Leader> getLeaders(int jugadores, boolean thrones) {
+    List<Leader> mazo = new ArrayList<>(jugadores);
     if (thrones) {
       Collections.shuffle(THRONES);
       mazo.addAll(THRONES.subList(0, jugadores * 4));
@@ -38,7 +37,7 @@ public final class LeadersFactory implements JavaDelegate {
   }
 
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     Game game = (Game)execution.getVariable("game");
     execution.setVariable("cards", getLeaders(game.totalPlayers(), game.isThrones()));
   }

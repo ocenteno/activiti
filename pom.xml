@@ -5,9 +5,9 @@
   <artifactId>simulator</artifactId>
   <version>1.0</version>
   <packaging>jar</packaging>
-  <name>BPMN 2.0 with Activiti - Examples</name>
+  <name>7 Wonders Simulator BPMN 2.0 with Activiti</name>
   <properties>
-    <activiti-version>5.18.0</activiti-version>
+    <activiti-version>5.22.0</activiti-version>
   </properties>
   <dependencies>
     <dependency>
@@ -61,10 +61,10 @@
   </dependencies>
   <build>
     <plugins>
-      <plugin>
+    <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.1</version>
         <configuration>
           <source>1.7</source>
           <target>1.7</target>
