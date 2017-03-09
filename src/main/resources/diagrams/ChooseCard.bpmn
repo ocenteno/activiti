@@ -8,7 +8,7 @@
     </scriptTask>
     <sequenceFlow id="flow2" sourceRef="remove-chosen" targetRef="endevent1"></sequenceFlow>
     <subProcess id="choose-card-and-action" name="Choose Card to Play">
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${options}" activiti:elementVariable="card">
+      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="${options}" activiti:elementVariable="card">
         <completionCondition>${current.cardToPlay != null}</completionCondition>
       </multiInstanceLoopCharacteristics>
       <scriptTask id="choose-card" name="Choose current card" scriptFormat="groovy" activiti:autoStoreVariables="false">
@@ -72,10 +72,10 @@ execution.setVariable("options", options)
   <bpmndi:BPMNDiagram id="BPMNDiagram_choose-a-card">
     <bpmndi:BPMNPlane bpmnElement="choose-a-card" id="BPMNPlane_choose-a-card">
       <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="211.0" y="106.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="211.0" y="310.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="211.0" y="390.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="211.0" y="492.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="remove-chosen" id="BPMNShape_remove-chosen">
         <omgdc:Bounds height="71.0" width="121.0" x="299.0" y="474.0"></omgdc:Bounds>
@@ -112,8 +112,7 @@ execution.setVariable("options", options)
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
         <omgdi:waypoint x="299.0" y="509.0"></omgdi:waypoint>
-        <omgdi:waypoint x="228.0" y="509.0"></omgdi:waypoint>
-        <omgdi:waypoint x="228.0" y="425.0"></omgdi:waypoint>
+        <omgdi:waypoint x="246.0" y="509.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
         <omgdi:waypoint x="539.0" y="280.0"></omgdi:waypoint>
@@ -152,8 +151,8 @@ execution.setVariable("options", options)
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
-        <omgdi:waypoint x="228.0" y="141.0"></omgdi:waypoint>
-        <omgdi:waypoint x="228.0" y="187.0"></omgdi:waypoint>
+        <omgdi:waypoint x="228.0" y="310.0"></omgdi:waypoint>
+        <omgdi:waypoint x="228.0" y="258.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
         <omgdi:waypoint x="289.0" y="222.0"></omgdi:waypoint>
