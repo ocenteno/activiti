@@ -22,7 +22,6 @@ public class HandOutCards implements JavaDelegate {
     } else { // Age I || Age III
       rotateLeft(game);
     }
-    execution.setVariable("game", game);
   }
 
   private void rotateLeft(Game game) {

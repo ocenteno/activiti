@@ -109,14 +109,14 @@ public class TestCheckCanBuy {
   }
 
   @Test
-  public void testCannotBuyResources() throws Exception {
+  public void testCannotBuyResources() {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_TOO_HIGH);
     this.checkCanBuy.execute(this.execution);
     assertEquals(false, this.result);
   }
 
   @Test
-  public void testCanBuyResources2GoldsEach() throws Exception {
+  public void testCanBuyResources2GoldsEach() {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_OK_2_COINS);
     when(this.current.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
         new Answer<Integer>() {
@@ -132,7 +132,7 @@ public class TestCheckCanBuy {
   }
 
   @Test
-  public void testCanBuyResources1GoldRight() throws Exception {
+  public void testCanBuyResources1GoldRight() {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_OK_1_COIN);
     when(this.current.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
         new Answer<Integer>() {
@@ -149,7 +149,7 @@ public class TestCheckCanBuy {
   }
 
   @Test
-  public void testCannotBuyResources2GoldEach() throws Exception {
+  public void testCannotBuyResources2GoldEach() {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_OK_1_2_COINS);
     when(this.current.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
         new Answer<Integer>() {
@@ -165,7 +165,7 @@ public class TestCheckCanBuy {
   }
 
   @Test
-  public void testCanBuyResourcesWithDiscount() throws Exception {
+  public void testCanBuyResourcesWithDiscount() {
     when(this.costLeft.getValue(this.execution)).thenReturn(COST_OK_DISCOUNTED);
     when(this.current.getWonder().getCostOf(any(Resource.class), any(Scope.class), anyInt())).then(
         new Answer<Integer>() {

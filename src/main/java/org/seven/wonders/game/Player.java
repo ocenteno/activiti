@@ -38,11 +38,10 @@ public class Player implements Serializable {
   }
 
   public void playLeader() {
-
+    this.leaders.remove(this.cardToPlay);
   }
 
-  public void playCard(Game game) {
-
+  public void playCard() {
   }
 
   @Override

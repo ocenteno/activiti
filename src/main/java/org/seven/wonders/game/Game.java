@@ -47,7 +47,7 @@ public class Game implements Serializable {
 
   static {
     for (int i = 0; i < 100; i++) {
-      CASH.getProduces().add(ORE, CLAY, STONE, WOOD, TEXTILE, PAPYRUS, GLASS);
+      CASH.getProduces().add(WOOD, ORE, CLAY, STONE, TEXTILE, GLASS, PAPYRUS);
     }
   }
 

@@ -4,11 +4,11 @@
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
     <scriptTask id="remove-chosen" name="Take chosen card" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <script>current.hand.remove(current.cardToPlay)</script>
+      <script>current.hand -= current.cardToPlay</script>
     </scriptTask>
     <sequenceFlow id="flow2" sourceRef="remove-chosen" targetRef="endevent1"></sequenceFlow>
     <subProcess id="choose-card-and-action" name="Choose Card to Play">
-      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="${options}" activiti:elementVariable="card">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${options}" activiti:elementVariable="card">
         <completionCondition>${current.cardToPlay != null}</completionCondition>
       </multiInstanceLoopCharacteristics>
       <scriptTask id="choose-card" name="Choose current card" scriptFormat="groovy" activiti:autoStoreVariables="false">
@@ -47,6 +47,8 @@ current.cardToPlay=card</script>
       <script>def options = (current.hand.clone() &lt;&lt; current.wonder.nextStages).flatten()
 Collections.sort(options, current.wonder.comparator)
 execution.setVariable("options", options)
+current.cardToPlay = null
+current.actionToPlay = null
 </script>
     </scriptTask>
     <sequenceFlow id="flow7" sourceRef="startevent1" targetRef="sort-cards"></sequenceFlow>

@@ -15,14 +15,14 @@ import org.seven.wonders.game.Player.Action;
 import org.seven.wonders.leaders.Leader;
 import org.seven.wonders.leaders.LeadersFactory;
 
-public class TestPlayLeaderSubprocess extends AbstractTest {
+public class TestPlayLeaderDelegate extends AbstractTest {
 
   private Game game = Game.processParameters(false, false, false, false, true, false);
 
   private Player player;
 
-  public TestPlayLeaderSubprocess() {
-    super("play-leader-sub");
+  public TestPlayLeaderDelegate() {
+    super("play-leader");
   }
 
   @Before
@@ -35,7 +35,7 @@ public class TestPlayLeaderSubprocess extends AbstractTest {
   }
 
   @Test
-  @Deployment(resources = { "diagrams/PlayLeaderSub.bpmn", "diagrams/ChooseCard.bpmn", "diagrams/CheckCanBuild.bpmn" })
+  @Deployment(resources = { "diagrams/PlayLeaderDelegate.bpmn" })
   public void testPlayAnyLeader() {
     this.player.giveCoins(6);
     Map<String, Object> variableMap = new HashMap<String, Object>();
@@ -54,7 +54,7 @@ public class TestPlayLeaderSubprocess extends AbstractTest {
   }
 
   @Test
-  @Deployment(resources = { "diagrams/PlayLeaderSub.bpmn", "diagrams/ChooseCard.bpmn", "diagrams/CheckCanBuild.bpmn" })
+  @Deployment(resources = { "diagrams/PlayLeaderDelegate.bpmn" })
   public void testSellAnyLeader() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("current", this.player);
