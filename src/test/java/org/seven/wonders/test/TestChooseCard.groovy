@@ -37,6 +37,7 @@ public class TestChooseCard {
     currentGame.random(3)
     currentPlayer = currentGame.currentPlayer()
     when(game.getValue(any(DelegateExecution.class))).thenReturn(currentGame)
+    when(execution.getVariable(eq("game"))).thenReturn(currentGame)
     when(current.getValue(any(DelegateExecution.class))).thenReturn(currentPlayer)
   }
 

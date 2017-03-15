@@ -42,9 +42,6 @@ if(efecto != null){
     <sequenceFlow id="flow10" sourceRef="hand-out-leaders" targetRef="gateway-seleccion-lideres"></sequenceFlow>
     <serviceTask id="distribute-leaders" name="Distribute Leaders" activiti:class="org.seven.wonders.services.DistributeCards">
       <extensionElements>
-        <activiti:field name="game">
-          <activiti:expression><![CDATA[${game}]]></activiti:expression>
-        </activiti:field>
         <activiti:field name="cards">
           <activiti:expression><![CDATA[${cards}]]></activiti:expression>
         </activiti:field>

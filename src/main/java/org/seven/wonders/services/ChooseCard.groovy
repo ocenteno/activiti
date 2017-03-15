@@ -11,53 +11,56 @@ import org.seven.wonders.game.Player
 
 class ChooseCard implements JavaDelegate {
 
-  private Expression game
   private Expression current
-  private Game currentGame
-  private Player currentPlayer
+  private Game game
+  private Player player
 
   @Override
   public void execute(DelegateExecution execution) {
-    currentGame = game.getValue(execution)
-    currentPlayer = current.getValue(execution)
-    currentPlayer.cardToPlay = null
-    currentPlayer.actionToPlay = null
-    def options = (currentPlayer.hand.clone() << currentPlayer.wonder.nextStages).flatten()
-    Collections.sort(options, currentPlayer.wonder.comparator)
+    game = (Game)execution.getVariable("game")
+    player = current.getValue(execution)
+    player.cardToPlay = null
+    player.actionToPlay = null
+    run()
+  }
+
+  def run() {
+    def options = (player.hand.clone() << player.wonder.nextStages).flatten()
+    Collections.sort(options, player.wonder.comparator)
     evaluateEachOption(options)
     chooseOption()
   }
 
   private evaluateEachOption(options) {
     options.each{ card ->
-      if(currentPlayer.cardToPlay != null){
+      if(player.cardToPlay != null){
         return
       }
       // can build chaining, with resources, or buying
-      if(currentPlayer.wonder.canChain(card) || CheckCanBuild.run(currentGame, currentPlayer, card)){
+      if(player.wonder.canChain(card) || CheckCanBuild.run(game, player, card)){
         return chooseCard(card)
       }
     }
   }
 
   def chooseCard(card){
-    currentPlayer.actionToPlay = BUILD
+    player.actionToPlay = BUILD
     if(card.class instanceof org.seven.wonders.cards.Stage)
-      currentPlayer.actionToPlay = STAGE
+      player.actionToPlay = STAGE
     if(card.class instanceof org.seven.wonders.cards.Sell)
-      currentPlayer.actionToPlay = SELL
-    currentPlayer.cardToPlay = card
+      player.actionToPlay = SELL
+    player.cardToPlay = card
   }
 
   def chooseOption(){
     // By default sell the card
-    if(currentPlayer.actionToPlay == null)
-      currentPlayer.actionToPlay=SELL
+    if(player.actionToPlay == null)
+      player.actionToPlay=SELL
     // Selling & evolving the wonder will use least important card (TODO: choose best for next player)
-    if(currentPlayer.actionToPlay==STAGE || currentPlayer.actionToPlay==SELL)
-      currentPlayer.cardToPlay=currentPlayer.hand.last()
+    if(player.actionToPlay==STAGE || player.actionToPlay==SELL)
+      player.cardToPlay=player.hand.last()
     // remove chosen card from hand
-    currentPlayer.hand -= currentPlayer.cardToPlay
+    player.hand -= player.cardToPlay
   }
 
 }

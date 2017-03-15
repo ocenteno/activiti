@@ -29,6 +29,14 @@ public class Player implements Serializable {
     return getWonder().getProduces().getCoins();
   }
 
+  public boolean allCardsUsed() {
+    return this.hand.size() == 0;
+  }
+
+  public boolean isLastCard() {
+    return this.hand.size() == 1;
+  }
+
   public void giveCoins(int n) {
     this.wonder.getProduces().add(n);
   }
@@ -37,11 +45,30 @@ public class Player implements Serializable {
     this.hand.add(card);
   }
 
-  public void playLeader() {
+  public Card playLeader() {
     this.leaders.remove(this.cardToPlay);
+    return playCard();
   }
 
-  public void playCard() {
+  public Card playCard() {
+    Card result = null;
+    switch (this.actionToPlay) {
+      case BUILD:
+        this.wonder.add(this.cardToPlay);
+        break;
+      case SELL:
+        this.wonder.sell(this.cardToPlay);
+        result = this.cardToPlay;
+        break;
+      case STAGE:
+        this.wonder.evolve(this.wonderLevelToPlay, this.cardToPlay);
+        break;
+    }
+    return result;
+  }
+
+  public boolean canPlayLast() {
+    return false;
   }
 
   @Override

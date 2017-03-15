@@ -8,7 +8,6 @@
     </scriptTask>
     <sequenceFlow id="flow16" sourceRef="take-leaders-deck" targetRef="choose-leader-to-play"></sequenceFlow>
     <sequenceFlow id="flow14" sourceRef="choose-leader-to-play" targetRef="play-a-leader"></sequenceFlow>
-    <serviceTask id="play-a-leader" name="Play Leader" activiti:expression="${current.playLeader()}"></serviceTask>
     <sequenceFlow id="flow17" sourceRef="play-a-leader" targetRef="clear-leaders-hand"></sequenceFlow>
     <scriptTask id="clear-leaders-hand" name="Set Leaders aside" scriptFormat="groovy" activiti:autoStoreVariables="false">
       <script>current.hand = []
@@ -18,14 +17,16 @@
     <endEvent id="endevent2" name="End"></endEvent>
     <serviceTask id="choose-leader-to-play" name="Choose Leader to Play" activiti:class="org.seven.wonders.services.ChooseCard">
       <extensionElements>
-        <activiti:field name="game">
-          <activiti:expression><![CDATA[${game}]]></activiti:expression>
-        </activiti:field>
         <activiti:field name="current">
           <activiti:expression><![CDATA[${current}]]></activiti:expression>
         </activiti:field>
       </extensionElements>
     </serviceTask>
+    <scriptTask id="play-a-leader" name="Play Leader" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def card = current.playLeader()
+if(card != null)
+	game.discard(card)</script>
+    </scriptTask>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_play-leader">
     <bpmndi:BPMNPlane bpmnElement="play-leader" id="BPMNPlane_play-leader">
@@ -35,9 +36,6 @@
       <bpmndi:BPMNShape bpmnElement="take-leaders-deck" id="BPMNShape_take-leaders-deck">
         <omgdc:Bounds height="80.0" width="105.0" x="280.0" y="170.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="play-a-leader" id="BPMNShape_play-a-leader">
-        <omgdc:Bounds height="80.0" width="105.0" x="558.0" y="170.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="clear-leaders-hand" id="BPMNShape_clear-leaders-hand">
         <omgdc:Bounds height="80.0" width="105.0" x="699.0" y="170.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
@@ -46,6 +44,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="choose-leader-to-play" id="BPMNShape_choose-leader-to-play">
         <omgdc:Bounds height="80.0" width="105.0" x="420.0" y="171.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="play-a-leader" id="BPMNShape_play-a-leader">
+        <omgdc:Bounds height="80.0" width="105.0" x="558.0" y="170.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
         <omgdi:waypoint x="255.0" y="209.0"></omgdi:waypoint>

@@ -37,7 +37,7 @@ public class TestAgeDelegateSubprocess extends AbstractTest {
 
   @Test
   @Deployment(resources = { "diagrams/AgeDelegate.bpmn", "diagrams/PlayLeaderDelegate.bpmn" })
-  public void testBuyLeader() {
+  public void testRunAge() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("game", this.game);
     variableMap.put("input", 1);
@@ -46,9 +46,14 @@ public class TestAgeDelegateSubprocess extends AbstractTest {
     assertTrue(processInstance instanceof VariableScope);
     assertEquals(this.game, ((VariableScope)processInstance).getVariable("game"));
     // 1 leader used
-    assertNotNull(this.game.currentPlayer().getLeaders());
     assertEquals(3, this.game.currentPlayer().getLeaders().size());
-    assertEquals(1, this.game.currentPlayer().getHand().size());
+    // all cards used
+    assertEquals(0, this.game.currentPlayer().getHand().size());
+    // 3 cards discarded minimum
+    assertTrue(this.game.getDiscardedCards().size() >= 3);
+    // no pending action
+    assertNull(this.game.currentPlayer().getActionToPlay());
+    assertNull(this.game.currentPlayer().getCardToPlay());
   }
 
 }

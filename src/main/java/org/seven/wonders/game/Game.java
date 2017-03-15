@@ -60,7 +60,7 @@ public class Game implements Serializable {
   }
 
   public boolean isLastCard() {
-    return firstPlayer().getHand().size() == 1;
+    return currentPlayer().getHand().size() == 1;
   }
 
   public void random(int numPlayers) {

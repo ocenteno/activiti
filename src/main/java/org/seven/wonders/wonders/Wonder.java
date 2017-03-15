@@ -117,16 +117,25 @@ public abstract class Wonder implements Serializable {
     apply(cardToPlay.getEffect());
   }
 
-  public void apply(Effect efecto) {
-    switch (efecto.getType()) {
+  public void evolve(Card wonderStage, Card cardToPlay) {
+    this.builtCards.get(cardToPlay.getColor()).add(cardToPlay);
+    apply(wonderStage.getEffect());
+  }
+
+  public void sell(Card cardToPlay) {
+    this.produces.add(3);
+  }
+
+  public void apply(Effect effect) {
+    switch (effect.getType()) {
       case COINS:
-        this.produces.add((int)efecto.getValue());
+        this.produces.add((int)effect.getValue());
         break;
       case RESOURCE:
-        addResources(efecto.getValue());
+        addResources(effect.getValue());
         break;
       case OR_RESOURCE:
-        this.produces.addOr((Resource[])efecto.getValue());
+        this.produces.addOr((Resource[])effect.getValue());
         break;
       default:
         break;
@@ -142,7 +151,9 @@ public abstract class Wonder implements Serializable {
   }
 
   public boolean contains(Card card) {
-    // if(effects.contains(Effect.duplicateCards())){return true;}
+    // if (effects.contains(Effect.duplicateCards())) {
+    // return true;
+    // }
     return this.builtCards.get(card.getColor()).contains(card);
   }
 

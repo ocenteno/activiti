@@ -5,7 +5,7 @@
     <callActivity id="init" name="Initialize" calledElement="initialize">
       <extensionElements>
         <activiti:in source="initiator" target="initiator"></activiti:in>
-        <activiti:out source="result" target="game"></activiti:out>
+        <activiti:out source="game" target="game"></activiti:out>
       </extensionElements>
     </callActivity>
     <callActivity id="prepare" name="Preparation of the Game" calledElement="prepare">

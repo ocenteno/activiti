@@ -51,9 +51,6 @@ execution.setVariable("cards", cards)</script>
     <sequenceFlow id="flow12" sourceRef="play-a-leader" targetRef="prepare-age-deck"></sequenceFlow>
     <serviceTask id="distribute-age-cards" name="Distribute Age Cards" activiti:class="org.seven.wonders.services.DistributeCards">
       <extensionElements>
-        <activiti:field name="game">
-          <activiti:expression><![CDATA[${game}]]></activiti:expression>
-        </activiti:field>
         <activiti:field name="cards">
           <activiti:expression><![CDATA[${cards}]]></activiti:expression>
         </activiti:field>
