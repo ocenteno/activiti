@@ -64,6 +64,11 @@ public class Player implements Serializable {
         this.wonder.evolve(this.wonderLevelToPlay, this.cardToPlay);
         break;
     }
+    if (this.cardToPlay instanceof Leader) {
+      this.leaders.remove(this.cardToPlay);
+    }
+    this.actionToPlay = null;
+    this.cardToPlay = null;
     return result;
   }
 

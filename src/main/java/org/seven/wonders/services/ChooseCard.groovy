@@ -4,24 +4,34 @@ import static org.seven.wonders.game.Player.Action.*
 import static org.seven.wonders.tokens.Resource.*
 
 import org.activiti.engine.delegate.DelegateExecution
-import org.activiti.engine.delegate.Expression
 import org.activiti.engine.delegate.JavaDelegate
 import org.seven.wonders.game.Game
 import org.seven.wonders.game.Player
 
 class ChooseCard implements JavaDelegate {
 
-  private Expression current
-  private Game game
-  private Player player
+  def Game game
+  def Player player
 
   @Override
   public void execute(DelegateExecution execution) {
     game = (Game)execution.getVariable("game")
-    player = current.getValue(execution)
+    // Choose card
+    for(Player it : game.players){
+      setPlayer(it)
+      run()
+    }
+    // Play card
+    for(Player it : game.players){
+      def card = it.playCard()
+      if(card != null) game.discard(card)
+    }
+  }
+
+  def setPlayer(Player it) {
+    player = it
     player.cardToPlay = null
     player.actionToPlay = null
-    run()
   }
 
   def run() {
@@ -60,7 +70,7 @@ class ChooseCard implements JavaDelegate {
     if(player.actionToPlay==STAGE || player.actionToPlay==SELL)
       player.cardToPlay=player.hand.last()
     // remove chosen card from hand
-    player.hand -= player.cardToPlay
+    player.hand.remove(player.cardToPlay)
   }
 
 }

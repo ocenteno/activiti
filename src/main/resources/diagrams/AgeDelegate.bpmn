@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/age">
+  <signal id="go" name="Go" activiti:scope="processInstance"></signal>
   <process id="age" name="Execution of an Age" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
@@ -26,23 +27,8 @@ cards.each{
 	game.nextPlayer().add(it);
 }</script>
     </scriptTask>
-    <sequenceFlow id="flow13" sourceRef="choose-card-to-play" targetRef="play-a-card"></sequenceFlow>
-    <callActivity id="play-a-leader" name="Play a Leader" calledElement="play-leader">
-      <extensionElements>
-        <activiti:in source="game" target="game"></activiti:in>
-        <activiti:in source="current" target="current"></activiti:in>
-      </extensionElements>
-      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
-    </callActivity>
-    <sequenceFlow id="flow12" sourceRef="play-a-leader" targetRef="prepare-age-deck"></sequenceFlow>
-    <serviceTask id="choose-card-to-play" name="Choose Card to Play" activiti:class="org.seven.wonders.services.ChooseCard">
-      <extensionElements>
-        <activiti:field name="current">
-          <activiti:expression><![CDATA[${current}]]></activiti:expression>
-        </activiti:field>
-      </extensionElements>
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
-    </serviceTask>
+    <sequenceFlow id="flow13" sourceRef="choose-card-to-play" targetRef="exclusivegateway1"></sequenceFlow>
+    <serviceTask id="choose-card-to-play" name="Play A Card" activiti:class="org.seven.wonders.services.ChooseCard"></serviceTask>
     <serviceTask id="discard-last-card" name="Discard last card" activiti:class="org.seven.wonders.services.DiscardLastCard">
       <extensionElements>
         <activiti:field name="current">
@@ -52,19 +38,13 @@ cards.each{
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
     </serviceTask>
     <sequenceFlow id="flow14" sourceRef="discard-last-card" targetRef="endevent1"></sequenceFlow>
-    <scriptTask id="play-a-card" name="Play Card" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
-      <script>def card = current.playCard()
-if(card != null)
-	game.discard(card)
-println " " + current + " " + current.actionToPlay + " " + current.cardToPlay + " " + current.hand.size()</script>
-    </scriptTask>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="pass-cards"></exclusiveGateway>
-    <sequenceFlow id="flow15" sourceRef="play-a-card" targetRef="exclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow15" sourceRef="play-a-leader" targetRef="prepare-age-deck"></sequenceFlow>
     <sequenceFlow id="last-card" name="last card" sourceRef="exclusivegateway1" targetRef="discard-last-card">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.lastCard}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="pass-cards" sourceRef="exclusivegateway1" targetRef="change-cards-in-hand"></sequenceFlow>
+    <serviceTask id="play-a-leader" name="Play Leader" activiti:class="org.seven.wonders.services.PlayLeader"></serviceTask>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_age">
     <bpmndi:BPMNPlane bpmnElement="age" id="BPMNPlane_age">
@@ -72,31 +52,28 @@ println " " + current + " " + current.actionToPlay + " " + current.cardToPlay + 
         <omgdc:Bounds height="35.0" width="35.0" x="230.0" y="125.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="615.0" y="372.0"></omgdc:Bounds>
+        <omgdc:Bounds height="35.0" width="35.0" x="460.0" y="372.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="gateway-elegir-lider" id="BPMNShape_gateway-elegir-lider">
         <omgdc:Bounds height="40.0" width="40.0" x="320.0" y="122.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="change-cards-in-hand" id="BPMNShape_change-cards-in-hand">
-        <omgdc:Bounds height="80.0" width="105.0" x="580.0" y="235.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="105.0" x="736.0" y="103.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="prepare-age-deck" id="BPMNShape_prepare-age-deck">
         <omgdc:Bounds height="80.0" width="105.0" x="420.0" y="103.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="play-a-leader" id="BPMNShape_play-a-leader">
-        <omgdc:Bounds height="80.0" width="105.0" x="420.0" y="235.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="choose-card-to-play" id="BPMNShape_choose-card-to-play">
         <omgdc:Bounds height="80.0" width="105.0" x="580.0" y="103.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="discard-last-card" id="BPMNShape_discard-last-card">
-        <omgdc:Bounds height="80.0" width="105.0" x="736.0" y="350.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="play-a-card" id="BPMNShape_play-a-card">
-        <omgdc:Bounds height="80.0" width="105.0" x="736.0" y="104.0"></omgdc:Bounds>
+        <omgdc:Bounds height="80.0" width="105.0" x="580.0" y="350.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
-        <omgdc:Bounds height="40.0" width="40.0" x="768.0" y="254.0"></omgdc:Bounds>
+        <omgdc:Bounds height="40.0" width="40.0" x="612.0" y="254.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="play-a-leader" id="BPMNShape_play-a-leader">
+        <omgdc:Bounds height="80.0" width="105.0" x="420.0" y="235.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="repartir" id="BPMNEdge_repartir">
         <omgdi:waypoint x="360.0" y="142.0"></omgdi:waypoint>
@@ -111,7 +88,7 @@ println " " + current + " " + current.actionToPlay + " " + current.cardToPlay + 
         <omgdi:waypoint x="339.0" y="275.0"></omgdi:waypoint>
         <omgdi:waypoint x="420.0" y="275.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="96.0" x="293.0" y="170.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="96.0" x="294.0" y="209.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
@@ -119,28 +96,32 @@ println " " + current + " " + current.actionToPlay + " " + current.cardToPlay + 
         <omgdi:waypoint x="580.0" y="143.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
-        <omgdi:waypoint x="632.0" y="235.0"></omgdi:waypoint>
-        <omgdi:waypoint x="632.0" y="183.0"></omgdi:waypoint>
+        <omgdi:waypoint x="736.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="685.0" y="143.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow13" id="BPMNEdge_flow13">
-        <omgdi:waypoint x="685.0" y="143.0"></omgdi:waypoint>
-        <omgdi:waypoint x="736.0" y="144.0"></omgdi:waypoint>
+        <omgdi:waypoint x="632.0" y="183.0"></omgdi:waypoint>
+        <omgdi:waypoint x="632.0" y="254.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="580.0" y="390.0"></omgdi:waypoint>
+        <omgdi:waypoint x="495.0" y="389.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
         <omgdi:waypoint x="472.0" y="235.0"></omgdi:waypoint>
         <omgdi:waypoint x="472.0" y="183.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
-        <omgdi:waypoint x="736.0" y="390.0"></omgdi:waypoint>
-        <omgdi:waypoint x="650.0" y="389.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
-        <omgdi:waypoint x="788.0" y="184.0"></omgdi:waypoint>
-        <omgdi:waypoint x="788.0" y="254.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="last-card" id="BPMNEdge_last-card">
+        <omgdi:waypoint x="632.0" y="294.0"></omgdi:waypoint>
+        <omgdi:waypoint x="632.0" y="350.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="16.0" width="100.0" x="580.0" y="313.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="pass-cards" id="BPMNEdge_pass-cards">
-        <omgdi:waypoint x="768.0" y="274.0"></omgdi:waypoint>
-        <omgdi:waypoint x="685.0" y="275.0"></omgdi:waypoint>
+        <omgdi:waypoint x="652.0" y="274.0"></omgdi:waypoint>
+        <omgdi:waypoint x="788.0" y="273.0"></omgdi:waypoint>
+        <omgdi:waypoint x="788.0" y="183.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

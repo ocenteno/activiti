@@ -4,7 +4,7 @@
     <startEvent id="startevent1" name="Start"></startEvent>
     <endEvent id="endevent1" name="End"></endEvent>
     <scriptTask id="remove-chosen" name="Take chosen card" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <script>current.hand -= current.cardToPlay</script>
+      <script>current.hand.remove(current.cardToPlay)</script>
     </scriptTask>
     <sequenceFlow id="flow2" sourceRef="remove-chosen" targetRef="endevent1"></sequenceFlow>
     <subProcess id="choose-card-and-action" name="Choose Card to Play">

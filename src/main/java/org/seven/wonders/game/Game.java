@@ -56,11 +56,21 @@ public class Game implements Serializable {
   }
 
   public boolean allCardsUsed() {
-    return currentPlayer().getHand().size() == 0;
+    for (Player player : this.players) {
+      if (player.getHand().size() != 0) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public boolean isLastCard() {
-    return currentPlayer().getHand().size() == 1;
+    for (Player player : this.players) {
+      if (player.getHand().size() > 1) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public void random(int numPlayers) {

@@ -36,9 +36,9 @@
     <sequenceFlow id="sid-C66A32C9-4E51-4AB2-9CE6-ED554745732C" sourceRef="sid-06E08BE5-BC14-469A-AB0A-D0787886F8CD" targetRef="init"></sequenceFlow>
     <sequenceFlow id="sid-C66A32C9-4351-44B2-9C36-3D5547457E2C" sourceRef="init" targetRef="prepare"></sequenceFlow>
     <sequenceFlow id="sid-D98A747D-544E-49A6-B09A-B1C4760B5006" sourceRef="prepare" targetRef="age1"></sequenceFlow>
-    <sequenceFlow id="sid-85F5A9E1-34BB-4AFE-9637-91BC2A6B5176" sourceRef="age1" targetRef="sid-CDBCA8A8-85A0-4F81-88C4-405918F37EA6"></sequenceFlow>
+    <sequenceFlow id="sid-85F5A9E1-34BB-4AFE-9637-91BC2A6B5176" sourceRef="age1" targetRef="age2"></sequenceFlow>
     <sequenceFlow id="sid-CAFB1631-2CF9-4765-B862-4910889012CF" sourceRef="age2" targetRef="age3"></sequenceFlow>
-    <sequenceFlow id="flow2" sourceRef="age3" targetRef="recuento"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="age3" targetRef="sid-CDBCA8A8-85A0-4F81-88C4-405918F37EA6"></sequenceFlow>
     <sequenceFlow id="sid-C004E2C9-A351-AAB2-9CE0-3D55A7A57E2C" sourceRef="recuento" targetRef="sid-CDBCA8A8-85A0-4F81-88C4-405918F37EA6"></sequenceFlow>
     <textAnnotation id="textannotation1">
       <text>Crear partida, asignar Maravillas y posiciones, separar cartas</text>
@@ -111,7 +111,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-85F5A9E1-34BB-4AFE-9637-91BC2A6B5176" id="BPMNEdge_sid-85F5A9E1-34BB-4AFE-9637-91BC2A6B5176">
         <omgdi:waypoint x="575.0" y="130.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1060.0" y="129.0"></omgdi:waypoint>
+        <omgdi:waypoint x="620.0" y="130.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-CAFB1631-2CF9-4765-B862-4910889012CF" id="BPMNEdge_sid-CAFB1631-2CF9-4765-B862-4910889012CF">
         <omgdi:waypoint x="720.0" y="130.0"></omgdi:waypoint>
@@ -119,7 +119,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
         <omgdi:waypoint x="865.0" y="130.0"></omgdi:waypoint>
-        <omgdi:waypoint x="915.0" y="130.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1060.0" y="129.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-C004E2C9-A351-AAB2-9CE0-3D55A7A57E2C" id="BPMNEdge_sid-C004E2C9-A351-AAB2-9CE0-3D55A7A57E2C">
         <omgdi:waypoint x="1015.0" y="130.0"></omgdi:waypoint>
