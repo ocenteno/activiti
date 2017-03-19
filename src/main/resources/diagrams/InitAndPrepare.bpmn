@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://simulator.7w/init-prepare">
+  <process id="init-and-prepare" name="Initialize 7 Wonders Game" isExecutable="true">
+    <startEvent id="inicio" name="Start"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="inicio" targetRef="init-form"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="playing-without-leaders" sourceRef="gateway-juego-con-lideres" targetRef="endevent1"></sequenceFlow>
+    <scriptTask id="give-coins" name="Give coins to each player" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>def monedas = org.seven.wonders.effects.Effect.coins(game.leaders || game.thrones ? 6 : 3);
+game.players.each { 
+	it.wonder.apply(monedas);
+}</script>
+    </scriptTask>
+    <scriptTask id="call-wonder" name="Call Wonder Power" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
+      <script>def efecto = current.wonder.invoke();
+if(efecto != null){ 
+	//current.apply(efecto);
+	//println "$current.wonder provokes $efecto";
+}
+</script>
+    </scriptTask>
+    <sequenceFlow id="flow3" sourceRef="give-coins" targetRef="call-wonder"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="shuffle-leaders" targetRef="distribute-leaders"></sequenceFlow>
+    <serviceTask id="shuffle-leaders" name="Shuffle Leaders" activiti:class="org.seven.wonders.leaders.LeadersFactory"></serviceTask>
+    <sequenceFlow id="playing-with-leaders" name="Playing with Leaders" sourceRef="gateway-juego-con-lideres" targetRef="shuffle-leaders">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.leaders==true || game.thrones==true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="distribute-leaders" targetRef="choose-leader"></sequenceFlow>
+    <serviceTask id="hand-out-leaders" name="Hand Out Leaders" activiti:class="org.seven.wonders.services.HandOutCards">
+      <extensionElements>
+        <activiti:field name="currentAge">
+          <activiti:expression><![CDATA[0]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow7" sourceRef="choose-leader" targetRef="hand-out-leaders"></sequenceFlow>
+    <sequenceFlow id="end-leaders-distribution" sourceRef="gateway-seleccion-lideres" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="flow9" sourceRef="call-wonder" targetRef="gateway-juego-con-lideres"></sequenceFlow>
+    <exclusiveGateway id="gateway-juego-con-lideres" name="Gateway Juego con Lideres" default="playing-without-leaders"></exclusiveGateway>
+    <exclusiveGateway id="gateway-seleccion-lideres" name="Gateway Seleccion Lideres" default="end-leaders-distribution"></exclusiveGateway>
+    <sequenceFlow id="flow10" sourceRef="hand-out-leaders" targetRef="gateway-seleccion-lideres"></sequenceFlow>
+    <serviceTask id="distribute-leaders" name="Distribute Leaders" activiti:class="org.seven.wonders.services.DistributeCards">
+      <extensionElements>
+        <activiti:field name="cards">
+          <activiti:expression><![CDATA[${cards}]]></activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="are-leaders-left" name="There are leaders left to choose" sourceRef="gateway-seleccion-lideres" targetRef="choose-leader">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${game.isLeaderPhaseFinished() == false}]]></conditionExpression>
+    </sequenceFlow>
+    <scriptTask id="choose-leader" name="Choose A Leader" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${game.players}" activiti:elementVariable="current"></multiInstanceLoopCharacteristics>
+      <script>Collections.sort(current.hand, current.wonder.comparator)
+def card = current.hand[0]
+current.leaders.add(card)
+current.hand.remove(card)</script>
+    </scriptTask>
+    <userTask id="init-form" name="Init Form" activiti:assignee="${initiator}">
+      <extensionElements>
+        <activiti:formProperty id="numPlayers" name="Numero de Jugadores" type="long" required="true"></activiti:formProperty>
+        <activiti:formProperty id="leaders" name="Jugar con Lideres" type="boolean" required="true"></activiti:formProperty>
+        <activiti:formProperty id="cities" name="Jugar con Cities" type="boolean" required="true"></activiti:formProperty>
+        <activiti:formProperty id="babel" name="Jugar con Babel" type="boolean" required="true"></activiti:formProperty>
+        <activiti:formProperty id="projects" name="Jugar con Proyectos" type="boolean" required="true"></activiti:formProperty>
+        <activiti:formProperty id="thrones" name="Jugar con 7 Thrones" type="boolean" required="true"></activiti:formProperty>
+        <activiti:formProperty id="teams" name="Jugar por Equipos" type="boolean" required="true"></activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <scriptTask id="create-game" name="Create Game" scriptFormat="groovy" activiti:autoStoreVariables="false">
+      <script>println "Preparing 7 Wonders game for ${numPlayers} players"
+def game = org.seven.wonders.game.Game.processParameters(leaders, cities, babel, projects, thrones, teams)
+//game.initializeDiscardPiles(numPlayers);
+game.random(numPlayers);
+execution.setVariable("game", game)</script>
+    </scriptTask>
+    <sequenceFlow id="flow11" sourceRef="create-game" targetRef="give-coins"></sequenceFlow>
+    <sequenceFlow id="flow12" sourceRef="init-form" targetRef="create-game"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_init-and-prepare">
+    <bpmndi:BPMNPlane bpmnElement="init-and-prepare" id="BPMNPlane_init-and-prepare">
+      <bpmndi:BPMNShape bpmnElement="inicio" id="BPMNShape_inicio">
+        <omgdc:Bounds height="35.0" width="35.0" x="193.0" y="146.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="704.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="give-coins" id="BPMNShape_give-coins">
+        <omgdc:Bounds height="71.0" width="141.0" x="340.0" y="357.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="call-wonder" id="BPMNShape_call-wonder">
+        <omgdc:Bounds height="71.0" width="141.0" x="340.0" y="242.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="shuffle-leaders" id="BPMNShape_shuffle-leaders">
+        <omgdc:Bounds height="71.0" width="141.0" x="537.0" y="242.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="hand-out-leaders" id="BPMNShape_hand-out-leaders">
+        <omgdc:Bounds height="71.0" width="141.0" x="936.0" y="357.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gateway-juego-con-lideres" id="BPMNShape_gateway-juego-con-lideres">
+        <omgdc:Bounds height="40.0" width="40.0" x="390.0" y="143.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="gateway-seleccion-lideres" id="BPMNShape_gateway-seleccion-lideres">
+        <omgdc:Bounds height="40.0" width="40.0" x="986.0" y="257.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="distribute-leaders" id="BPMNShape_distribute-leaders">
+        <omgdc:Bounds height="71.0" width="141.0" x="537.0" y="359.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="choose-leader" id="BPMNShape_choose-leader">
+        <omgdc:Bounds height="71.0" width="141.0" x="738.0" y="357.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="init-form" id="BPMNShape_init-form">
+        <omgdc:Bounds height="71.0" width="141.0" x="140.0" y="242.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="create-game" id="BPMNShape_create-game">
+        <omgdc:Bounds height="71.0" width="141.0" x="140.0" y="357.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="210.0" y="181.0"></omgdi:waypoint>
+        <omgdi:waypoint x="210.0" y="242.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="playing-without-leaders" id="BPMNEdge_playing-without-leaders">
+        <omgdi:waypoint x="410.0" y="143.0"></omgdi:waypoint>
+        <omgdi:waypoint x="409.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="704.0" y="87.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="410.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="410.0" y="313.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="607.0" y="313.0"></omgdi:waypoint>
+        <omgdi:waypoint x="607.0" y="359.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="playing-with-leaders" id="BPMNEdge_playing-with-leaders">
+        <omgdi:waypoint x="430.0" y="163.0"></omgdi:waypoint>
+        <omgdi:waypoint x="607.0" y="163.0"></omgdi:waypoint>
+        <omgdi:waypoint x="607.0" y="242.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="48.0" width="100.0" x="439.0" y="175.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="678.0" y="394.0"></omgdi:waypoint>
+        <omgdi:waypoint x="738.0" y="392.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="879.0" y="392.0"></omgdi:waypoint>
+        <omgdi:waypoint x="936.0" y="392.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="end-leaders-distribution" id="BPMNEdge_end-leaders-distribution">
+        <omgdi:waypoint x="1006.0" y="257.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1005.0" y="87.0"></omgdi:waypoint>
+        <omgdi:waypoint x="739.0" y="87.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="410.0" y="242.0"></omgdi:waypoint>
+        <omgdi:waypoint x="410.0" y="183.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow10" id="BPMNEdge_flow10">
+        <omgdi:waypoint x="1006.0" y="357.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1006.0" y="297.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="are-leaders-left" id="BPMNEdge_are-leaders-left">
+        <omgdi:waypoint x="986.0" y="277.0"></omgdi:waypoint>
+        <omgdi:waypoint x="808.0" y="277.0"></omgdi:waypoint>
+        <omgdi:waypoint x="808.0" y="357.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="48.0" width="100.0" x="830.0" y="242.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="281.0" y="392.0"></omgdi:waypoint>
+        <omgdi:waypoint x="340.0" y="392.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow12" id="BPMNEdge_flow12">
+        <omgdi:waypoint x="210.0" y="313.0"></omgdi:waypoint>
+        <omgdi:waypoint x="210.0" y="357.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
