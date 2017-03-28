@@ -17,6 +17,8 @@ public class Cost implements Serializable {
 
   public static final Cost COIN = new Cost(1);
 
+  public static final Cost CARD = new Cost(-1);
+
   private transient List<Resource> resources;
 
   protected int coins;

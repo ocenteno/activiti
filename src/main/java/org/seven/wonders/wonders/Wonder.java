@@ -16,9 +16,13 @@ import org.seven.wonders.cards.Card;
 import org.seven.wonders.cards.Card.Color;
 import org.seven.wonders.effects.Condition.Scope;
 import org.seven.wonders.effects.Effect;
+import org.seven.wonders.effects.HabilityEffect;
+import org.seven.wonders.game.Habilities;
 import org.seven.wonders.game.Price;
-import org.seven.wonders.tokens.Production;
+import org.seven.wonders.game.Production;
 import org.seven.wonders.tokens.Resource;
+import org.seven.wonders.tokens.Science;
+import org.seven.wonders.tokens.Token;
 
 @Getter
 @NoArgsConstructor
@@ -51,13 +55,15 @@ public abstract class Wonder implements Serializable {
 
   private int levels;
 
-  private Card[] nextStages = new Card[0];
+  private final Card[] nextStages = new Card[0];
 
-  private Production produces = new Production();
+  private final Habilities habilities = new Habilities();
 
-  private List<Effect> resources = new ArrayList<>();
+  private final Production produces = new Production();
 
-  private Map<Color, List<Card>> builtCards = new HashMap<>(9);
+  private final WonderTokens data = new WonderTokens();
+
+  private final Map<Color, List<Card>> builtCards = new HashMap<>(9);
 
   protected Price price = new Price();
 
@@ -112,9 +118,64 @@ public abstract class Wonder implements Serializable {
     return COMPARATOR;
   }
 
+  public void enable(Class<? extends HabilityEffect> clazz) {
+    this.habilities.set(clazz);
+  }
+
   public void add(Card cardToPlay) {
     this.builtCards.get(cardToPlay.getColor()).add(cardToPlay);
     apply(cardToPlay.getEffect());
+  }
+
+  public void addVPs(int value) {
+    this.data.directVPs += value;
+  }
+
+  public void addCoins(int value) {
+    this.produces.add(value);
+  }
+
+  public void addShields(int value) {
+    this.data.shields += value;
+  }
+
+  public void addHalfShields(int value) {
+    this.data.halfShields += value;
+  }
+
+  public void addResources(Resource... resources) {
+    if (resources.length == 0) {
+      throw new IllegalArgumentException("Must provide at least one resource");
+    }
+    if (resources.length == 1) {
+      addResources(resources[0]);
+    } else if (resources[0] == resources[1]) {
+      this.produces.add(resources);
+    }
+    this.produces.addOr(resources);
+  }
+
+  public void addScience(Science... value) {
+    if (value.length == 0) {
+      throw new IllegalArgumentException("Must provide at least one science");
+    }
+    if (value.length == 1) {
+      this.data.science.add(value[0]);
+    }
+    this.data.orScience.add(value);
+  }
+
+  public void addToken(Token... value) {
+    if (value.length == 0) {
+      throw new IllegalArgumentException("Must provide at least one token");
+    }
+    for (int i = 0; i < value.length; i++) {
+      this.data.tokens.add(value[i]);
+    }
+  }
+
+  public void removeToken(Token value) {
+    this.data.tokens.remove(value);
   }
 
   public void evolve(Card wonderStage, Card cardToPlay) {
@@ -126,27 +187,40 @@ public abstract class Wonder implements Serializable {
     this.produces.add(3);
   }
 
-  public void apply(Effect effect) {
-    switch (effect.getType()) {
-      case COINS:
-        this.produces.add((int)effect.getValue());
-        break;
-      case RESOURCE:
-        addResources(effect.getValue());
-        break;
-      case OR_RESOURCE:
-        this.produces.addOr((Resource[])effect.getValue());
-        break;
-      default:
-        break;
+  public void debt(int value) {
+    int debt = this.produces.pay(value);
+    while (debt >= 5) {
+      this.data.tokens.add(Token.DEBT_5);
+      debt -= 5;
+    }
+    while (debt >= 3) {
+      this.data.tokens.add(Token.DEBT_3);
+      debt -= 3;
+    }
+    while (debt >= 2) {
+      this.data.tokens.add(Token.DEBT_2);
+      debt -= 2;
+    }
+    while (debt > 0) {
+      this.data.tokens.add(Token.DEBT_1);
+      debt--;
     }
   }
 
-  private void addResources(Object value) {
-    if (value instanceof Resource) {
-      this.produces.add((Resource)value);
-    } else if (value instanceof Resource[]) {
-      this.produces.add((Resource[])value);
+  public void apply(Effect effect) {
+    switch (effect.getType()) {
+      case ACTION:
+        this.data.actions.add(effect);
+        break;
+      case WHEN:
+        this.data.when.add(effect);
+        break;
+      case END_VPS:
+        this.data.vps.add(effect);
+        break;
+      default:
+        effect.apply(this);
+        break;
     }
   }
 
@@ -193,4 +267,5 @@ public abstract class Wonder implements Serializable {
     });
     return result;
   }
+
 }

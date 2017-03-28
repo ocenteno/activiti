@@ -6,7 +6,7 @@
     <endEvent id="endevent1" name="End"></endEvent>
     <sequenceFlow id="playing-without-leaders" sourceRef="gateway-juego-con-lideres" targetRef="endevent1"></sequenceFlow>
     <scriptTask id="give-coins" name="Give coins to each player" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <script>def monedas = org.seven.wonders.effects.Effect.coins(game.leaders || game.thrones ? 6 : 3);
+      <script>def monedas = org.seven.wonders.effects.direct.GetCoins.instantiate(game.leaders || game.thrones ? 6 : 3);
 game.players.each { 
 	it.wonder.apply(monedas);
 }</script>

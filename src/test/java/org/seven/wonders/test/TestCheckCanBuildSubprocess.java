@@ -10,8 +10,8 @@ import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.test.Deployment;
 import org.junit.Before;
 import org.junit.Test;
+import org.seven.wonders.game.Production;
 import org.seven.wonders.tokens.Cost;
-import org.seven.wonders.tokens.Production;
 
 public class TestCheckCanBuildSubprocess extends AbstractTest {
 

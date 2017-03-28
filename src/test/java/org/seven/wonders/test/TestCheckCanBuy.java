@@ -22,9 +22,9 @@ import org.mockito.stubbing.Answer;
 import org.seven.wonders.effects.Condition.Scope;
 import org.seven.wonders.game.Game;
 import org.seven.wonders.game.Player;
+import org.seven.wonders.game.Production;
 import org.seven.wonders.services.CheckCanBuy;
 import org.seven.wonders.tokens.Cost;
-import org.seven.wonders.tokens.Production;
 import org.seven.wonders.tokens.Resource;
 
 @RunWith(MockitoJUnitRunner.class)

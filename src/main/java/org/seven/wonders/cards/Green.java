@@ -2,7 +2,7 @@ package org.seven.wonders.cards;
 
 import static org.seven.wonders.tokens.Resource.*;
 
-import org.seven.wonders.effects.Effect;
+import org.seven.wonders.effects.direct.GetScience;
 import org.seven.wonders.tokens.Cost;
 import org.seven.wonders.tokens.Resource;
 import org.seven.wonders.tokens.Science;
@@ -37,15 +37,15 @@ public class Green extends Card {
     setNames(Green.class.getDeclaredFields());
   }
 
-  public Green(Science valor, Card cadena, Resource... recursos) {
-    this(valor, recursos);
-    if (cadena != null) {
-      getCost().setChain(cadena);
+  public Green(Science value, Card chain, Resource... resources) {
+    this(value, resources);
+    if (chain != null) {
+      getCost().setChain(chain);
     }
   }
 
-  public Green(Science valor, Resource... recursos) {
-    super(Color.GREEN, Effect.science(valor), new Cost(recursos));
+  public Green(Science value, Resource... resources) {
+    super(Color.GREEN, GetScience.instantiate(value), new Cost(resources));
   }
 
 }

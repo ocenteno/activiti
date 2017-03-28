@@ -5,8 +5,12 @@ import static org.seven.wonders.tokens.Resource.*;
 import static org.seven.wonders.tokens.Science.*;
 
 import org.seven.wonders.effects.Condition;
-import org.seven.wonders.effects.DoubleEffect;
 import org.seven.wonders.effects.Effect;
+import org.seven.wonders.effects.deferred.DeferredVPs;
+import org.seven.wonders.effects.direct.CopyCardSides;
+import org.seven.wonders.effects.direct.GetScience;
+import org.seven.wonders.effects.mixed.DebtVPs;
+import org.seven.wonders.effects.mixed.ForMeAndSides;
 import org.seven.wonders.tokens.Cost;
 import org.seven.wonders.tokens.Resource;
 import org.seven.wonders.tokens.Token;
@@ -41,25 +45,24 @@ public class Guild extends Card {
 
   public static final Guild GAMERS_GUILD = new Guild(MY_COINS, 1, STONE, CLAY, ORE, WOOD);
 
-  public static final Guild SCIENTISTS_GUILD = new Guild(Effect.multipleScience(COMPASS, TABLET, GEAR), ORE, ORE, WOOD,
-      WOOD, PAPYRUS);
+  public static final Guild SCIENTISTS_GUILD = new Guild(GetScience.instantiate(COMPASS, TABLET, GEAR), //
+      ORE, ORE, WOOD, WOOD, PAPYRUS);
 
-  public static final Guild MARAUDERS_GUILD = new Guild(DoubleEffect.tokensSides(Token.VICTORY_3, Token.DEFEAT), WOOD,
-      WOOD, ORE, GLASS);
+  public static final Guild MARAUDERS_GUILD = new Guild(ForMeAndSides.instantiate(Token.VICTORY_3, Token.DEFEAT), //
+      WOOD, WOOD, ORE, GLASS);
 
-  public static final Guild COURTESANS_GUILD =
-      new Guild(Effect.copyCard(Card.Color.LEADER), CLAY, WOOD, TEXTILE, GLASS);
+  public static final Guild COURTESANS_GUILD = new Guild(CopyCardSides.LEADER, CLAY, WOOD, TEXTILE, GLASS);
 
   public static final Guild SHIPOWNERS_GUILD = new Guild(MY_GREY_BROWN_GUILD, 1, WOOD, WOOD, WOOD, GLASS, PAPYRUS);
 
-  public static final Guild COUNTERFEITERS_GUILD = new Guild(DoubleEffect.debtVPs(3, 5), ORE, ORE, ORE, GLASS, TEXTILE);
+  public static final Guild COUNTERFEITERS_GUILD = new Guild(DebtVPs.instantiate(3, 5), ORE, ORE, ORE, GLASS, TEXTILE);
 
   static {
     setNames(Guild.class.getDeclaredFields());
   }
 
   public Guild(Condition condicion, int valor, Resource... recursos) {
-    super(Color.GUILD, Effect.conditionedVPs(valor, condicion), new Cost(recursos));
+    super(Color.GUILD, DeferredVPs.instantiate(valor, condicion), new Cost(recursos));
   }
 
   public Guild(Effect efecto, Resource... recursos) {

@@ -1,6 +1,6 @@
 package org.seven.wonders.cards;
 
-import org.seven.wonders.effects.Effect;
+import org.seven.wonders.effects.direct.GetResources;
 import org.seven.wonders.tokens.Cost;
 import org.seven.wonders.tokens.Resource;
 
@@ -17,7 +17,7 @@ public class Grey extends Card {
   }
 
   public Grey(Resource recurso) {
-    super(Color.GREY, Effect.resources(recurso), Cost.FREE);
+    super(Color.GREY, GetResources.instantiate(recurso), Cost.FREE);
   }
 
 }

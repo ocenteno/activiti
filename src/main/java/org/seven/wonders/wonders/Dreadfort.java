@@ -4,11 +4,11 @@ import org.seven.wonders.cards.Card;
 
 public class Dreadfort extends Wonder {
 
-  private static final Card[] CARA_A = new Card[] {};
+  private static final Card[] SIDE_A = new Card[] {};
 
-  private static final Card[] CARA_B = new Card[] {};
+  private static final Card[] SIDE_B = new Card[] {};
 
-  public static final Dreadfort WONDER = new Dreadfort(CARA_A, CARA_B);
+  public static final Dreadfort WONDER = new Dreadfort(SIDE_A, SIDE_B);
 
   private Dreadfort(Card[] caraA, Card[] caraB) {
     super(caraA, caraB);

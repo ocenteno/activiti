@@ -1,4 +1,4 @@
-package org.seven.wonders.tokens;
+package org.seven.wonders.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,13 +7,22 @@ import java.util.List;
 
 import lombok.Getter;
 
+import org.seven.wonders.tokens.Cost;
+import org.seven.wonders.tokens.Resource;
+
 public class Production extends Cost {
 
   @Getter
   private List<Resource[]> or = new ArrayList<>();
 
-  public void add(int quantity) {
-    this.coins += quantity;
+  public void add(int value) {
+    this.coins += value;
+  }
+
+  public int pay(int value) {
+    int diff = this.coins - value;
+    this.coins -= Math.min(value, this.coins);
+    return Math.max(0, diff);
   }
 
   public void add(Resource... recursos) {

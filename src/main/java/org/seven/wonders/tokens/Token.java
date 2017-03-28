@@ -23,6 +23,8 @@ public class Token implements Serializable {
 
   public static final Token SHIELD = new Token(0, Type.SHIELD);
 
+  public static final Token DEBT = new Token(0, Type.DEBT);
+
   public static final Token DEBT_1 = new Token(-1, Type.DEBT);
 
   public static final Token DEBT_2 = new Token(-2, Type.DEBT);

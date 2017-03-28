@@ -1,26 +1,14 @@
 package org.seven.wonders.effects;
 
-public class WhenEffect extends Effect {
+import lombok.Data;
 
-  public static final WhenEffect BUY_RIGHT_2 = new WhenEffect(Condition.RESOURCES_RIGHT, 2);
+@Data
+public abstract class WhenEffect implements Effect {
 
-  public static final WhenEffect BUY_LEFT_2 = new WhenEffect(Condition.RESOURCES_LEFT, 2);
+  private final Type type = Type.WHEN;
 
-  public static WhenEffect receive(Object when, Object then) {
-    return new WhenEffect(Condition.when(when), then);
-  }
+  private final Object value;
 
-  public static WhenEffect reducePrice(Condition condicion, int valor) {
-    return new WhenEffect(condicion, valor);
-  }
-
-  // public static EfectoComercio costeAmpliado(Carta.Color color, int valors) {
-  // return new EfectoComercio(Tipo.TOKEN, yo, Tipo.TOKEN_LADOS, lados);
-  // }
-
-  public WhenEffect(Condition condicion, Object valor) {
-    super(Type.WHEN, valor);
-    setCondition(condicion);
-  }
+  private final When condition;
 
 }

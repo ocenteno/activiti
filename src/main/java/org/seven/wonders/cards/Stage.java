@@ -5,8 +5,12 @@ import org.seven.wonders.tokens.Cost;
 
 public class Stage extends Card {
 
-  public Stage(Effect efecto, Cost coste) {
-    super(Color.WONDER, efecto, coste);
+  public Stage(Effect effect, Cost cost) {
+    super(Color.WONDER, effect, cost);
+  }
+
+  public Stage(Effect effect, Color color) {
+    super(color, effect, Cost.CARD);
   }
 
 }

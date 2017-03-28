@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 import lombok.Data;
 
 import org.seven.wonders.effects.Effect;
-import org.seven.wonders.game.Player;
 import org.seven.wonders.tokens.Cost;
 
 @Data
@@ -21,11 +20,6 @@ public class Card implements Serializable {
   private String name;
 
   private boolean built;
-
-  public void build(Player jugador) {
-    this.effect.apply(jugador);
-    this.built = true;
-  }
 
   @Override
   public String toString() {

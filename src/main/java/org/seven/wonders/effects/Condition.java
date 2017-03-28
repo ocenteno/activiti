@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import lombok.Data;
 
+import org.seven.wonders.cards.Card;
 import org.seven.wonders.cards.Card.Color;
 import org.seven.wonders.tokens.Token;
 
@@ -36,6 +37,10 @@ public class Condition implements Serializable {
   public static final Condition MY_WONDER = new Condition(WONDER, Type.WONDER, ME);
 
   public static final Condition MY_YELLOWS = new Condition(YELLOW, Type.COLOR, ME);
+
+  public static final Condition MY_BLUE = new Condition(BLUE, Type.COLOR, ME);
+
+  public static final Condition MY_GUILDS = new Condition(GUILD, Type.COLOR, ME);
 
   public static final Condition SIDE_BLACKS = new Condition(BLACK, Type.COLOR, SIDES);
 
@@ -67,6 +72,10 @@ public class Condition implements Serializable {
 
   public static final Condition RESOURCES_RIGHT = new Condition(new Color[] { BROWN, GREY }, Type.NEIGHBOUR, RIGHT);
 
+  public static final Condition RESOURCES_BANK = new Condition(new Color[] { BROWN, GREY }, Type.NEIGHBOUR, BANK);
+
+  public static final Condition RESOURCES_ANY = new Condition(new Color[] { BROWN, GREY }, Type.NEIGHBOUR, OTHERS);
+
   public static final Condition PAY_LEFT = new Condition(Type.COINS, Type.PAY, LEFT);
 
   public static final Condition PAY_RIGHT = new Condition(Type.COINS, Type.PAY, RIGHT);
@@ -80,6 +89,10 @@ public class Condition implements Serializable {
   public static final Condition SIDE_VICTORIES = new Condition(Token.Type.VICTORY, Type.TOKEN, SIDES);
 
   public static final Condition SIDE_DEFEATS = new Condition(Token.Type.DEFEAT, Type.TOKEN, SIDES);
+
+  public static final Condition CHAIN = new Condition(Card.class, Type.CHAIN, ME);
+
+  public static final Condition ALL_PLAYERS = new Condition(OTHERS, Type.COINS, OTHERS);
 
   public static Condition when(Object when) {
     return new Condition(when, Type.TOKEN, ME);
@@ -97,7 +110,8 @@ public class Condition implements Serializable {
     WONDER,
     COINS,
     NEIGHBOUR,
-    PAY
+    PAY,
+    CHAIN
   }
 
   public static enum Scope {

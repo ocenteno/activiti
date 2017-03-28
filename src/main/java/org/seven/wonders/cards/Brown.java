@@ -2,7 +2,7 @@ package org.seven.wonders.cards;
 
 import static org.seven.wonders.tokens.Resource.*;
 
-import org.seven.wonders.effects.Effect;
+import org.seven.wonders.effects.direct.GetResources;
 import org.seven.wonders.tokens.Cost;
 import org.seven.wonders.tokens.Resource;
 
@@ -45,11 +45,11 @@ public class Brown extends Card {
   }
 
   public Brown(Cost coste, Resource recurso) {
-    super(Color.BROWN, Effect.resources(recurso), coste);
+    super(Color.BROWN, GetResources.instantiate(recurso), coste);
   }
 
   private Brown(Cost coste, Resource... recursos) {
-    super(Color.BROWN, Effect.equalOrDifferentResources(recursos), coste);
+    super(Color.BROWN, GetResources.instantiate(recursos), coste);
   }
 
 }
