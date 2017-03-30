@@ -10,7 +10,6 @@ public class ChangeWonder extends DirectEffect {
   @Override
   public void apply(Wonder... others) {
     for (Wonder wonder : others) {
-      wonder.addVPs((int)getValue());
     }
   }
 

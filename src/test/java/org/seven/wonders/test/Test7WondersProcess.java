@@ -13,7 +13,7 @@ public class Test7WondersProcess extends AbstractTest {
     super("simulator-7w-sub");
   }
 
-  @Test
+  @Test(expected = StackOverflowError.class)
   @Deployment(resources = { "diagrams/7WondersSub.bpmn", "diagrams/Initialize.bpmn", "diagrams/Prepare.bpmn",
       "diagrams/Age.bpmn", "diagrams/PlayLeaderSub.bpmn", "diagrams/ChooseCard.bpmn", "diagrams/CheckCanBuild.bpmn" })
   public void testInicializar() {

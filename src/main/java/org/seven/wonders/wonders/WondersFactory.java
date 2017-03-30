@@ -15,40 +15,40 @@ import org.seven.wonders.game.Game;
 public final class WondersFactory implements JavaDelegate {
 
   // Básicos (7)
-  private static Wonder ALEXANDRIA;
+  private static Wonder ALEXANDRIA = Alexandria.WONDER;
 
-  private static Wonder RHODOS;
+  private static Wonder RHODOS = Rhodos.WONDER;
 
-  private static Wonder HALIKARNASSOS;
+  private static Wonder HALIKARNASSOS = Halikarnassos.WONDER;
 
-  private static Wonder OLYMPIA;
+  private static Wonder OLYMPIA = Olympia.WONDER;
 
-  private static Wonder EPHESOS;
+  private static Wonder EPHESOS = Ephesos.WONDER;
 
-  private static Wonder BABYLON;
+  private static Wonder BABYLON = Babylon.WONDER;
 
-  private static Wonder GIZAH;
+  private static Wonder GIZAH = Gizah.WONDER;
 
   // Leaders y goodies (3)
-  private static Wonder ROME;
+  private static Wonder ROME = Rome.WONDER;
 
-  private static Wonder CATAN;
+  private static Wonder CATAN = Catan.WONDER;
 
-  private static Wonder BRUSSELS;
+  private static Wonder BRUSSELS = Brussels.WONDER;
 
   // Cities (2)
-  private static Wonder PETRA;
+  private static Wonder PETRA = Petra.WONDER;
 
-  private static Wonder AGIA_SOPHIA;
+  private static Wonder AGIA_SOPHIA = AgiaSophia.WONDER;
 
   // Wonderpack (4)
-  private static Wonder ABU_SIMBEL;
+  private static Wonder ABU_SIMBEL = AbuSimbel.WONDER;
 
-  private static Wonder GREAT_WALL;
+  private static Wonder GREAT_WALL = GreatWall.WONDER;
 
-  private static Wonder STONEHENGE;
+  private static Wonder STONEHENGE = Stonehenge.WONDER;
 
-  private static Wonder MANNEKEN_PIS;
+  private static Wonder MANNEKEN_PIS = MannnekenPis.WONDER;
 
   // Thrones (16)
   private static final Wonder THE_WALL = TheWall.WONDER;
@@ -95,38 +95,38 @@ public final class WondersFactory implements JavaDelegate {
     WINTERFELL, PYKE, THE_TWINS, RIVERRUN, THE_EYRE, HARRENHAL, CASTERLY_ROCK, KINGS_LANDING, STORMS_END,
       DRAGON_STONE, HIGHGARDEN, SUNSPEAR, BRAAVOS, QARTH, MEREEN, WEIRWOOD, FIST_OF_THE_FIRST_MEN, DREADFORT };
 
-  public static List<Wonder> randomBasic(int jugadores) {
-    return random(jugadores, 0, 7);
+  public static List<Wonder> randomBasic(int players) {
+    return random(players, 0, 7);
   }
 
-  public static List<Wonder> randomLeaders(int jugadores) {
-    return random(jugadores, 0, 10);
+  public static List<Wonder> randomLeaders(int players) {
+    return random(players, 0, 10);
   }
 
-  public static List<Wonder> randomCities(int jugadores) {
-    return random(jugadores, 0, 12);
+  public static List<Wonder> randomCities(int players) {
+    return random(players, 0, 12);
   }
 
-  public static List<Wonder> randomWonderPack(int jugadores) {
-    return random(jugadores, 0, 16);
+  public static List<Wonder> randomWonderPack(int players) {
+    return random(players, 0, 16);
   }
 
-  public static List<Wonder> randomThrones(int jugadores) {
-    return random(jugadores, 16, 32);
+  public static List<Wonder> randomThrones(int players) {
+    return random(players, 16, 32);
   }
 
-  public static List<Wonder> randomKingdoms(int jugadores) {
-    return random(jugadores, 16, 35);
+  public static List<Wonder> randomKingdoms(int players) {
+    return random(players, 16, 35);
   }
 
-  public static List<Wonder> randomAll(int jugadores) {
-    return random(jugadores, 0, 35);
+  public static List<Wonder> randomAll(int players) {
+    return random(players, 0, 35);
   }
 
-  private static List<Wonder> random(int jugadores, int min, int max) {
-    List<Wonder> wonders = new ArrayList<Wonder>(jugadores);
-    while (wonders.size() < jugadores) {
-      Wonder m = generarMaravilla(min, max);
+  private static List<Wonder> random(int players, int min, int max) {
+    List<Wonder> wonders = new ArrayList<Wonder>(players);
+    while (wonders.size() < players) {
+      Wonder m = randomizeWonder(min, max);
       if (!wonders.contains(m)) {
         m.setCaraActiva(RANDOM.nextBoolean());
         wonders.add(m);
@@ -135,7 +135,7 @@ public final class WondersFactory implements JavaDelegate {
     return wonders;
   }
 
-  private static final Wonder generarMaravilla(int min, int max) {
+  private static final Wonder randomizeWonder(int min, int max) {
     return WONDERS[min + RANDOM.nextInt(max - min)];
   }
 

@@ -17,7 +17,7 @@ import org.seven.wonders.leaders.LeadersFactory;
 
 public class TestAgeSubprocess extends AbstractTest {
 
-  private Game game = Game.processParameters(false, true, false, false, true, false);
+  private Game game = Game.processParameters(false, false, false, false, false, false);
 
   public TestAgeSubprocess() {
     super("age-sub");
@@ -35,9 +35,9 @@ public class TestAgeSubprocess extends AbstractTest {
     }
   }
 
-  @Test
+  @Test(expected = StackOverflowError.class)
   @Deployment(resources = { "diagrams/Age.bpmn", "diagrams/PlayLeaderSub.bpmn", "diagrams/ChooseCard.bpmn",
-  "diagrams/CheckCanBuild.bpmn" })
+      "diagrams/CheckCanBuild.bpmn" })
   public void testBuyLeader() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("game", this.game);

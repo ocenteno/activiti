@@ -147,9 +147,7 @@ public abstract class Wonder implements Serializable {
     if (resources.length == 0) {
       throw new IllegalArgumentException("Must provide at least one resource");
     }
-    if (resources.length == 1) {
-      addResources(resources[0]);
-    } else if (resources[0] == resources[1]) {
+    if (resources.length == 1 || resources[0] == resources[1]) {
       this.produces.add(resources);
     }
     this.produces.addOr(resources);

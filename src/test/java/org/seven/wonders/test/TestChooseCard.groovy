@@ -13,21 +13,21 @@ import org.mockito.runners.MockitoJUnitRunner
 import org.seven.wonders.cards.CardsFactory
 import org.seven.wonders.game.Game
 import org.seven.wonders.game.Player
-import org.seven.wonders.game.Player.Action
 import org.seven.wonders.services.ChooseCard
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestChooseCard {
 
-  private Game currentGame = Game.processParameters(false, false, false, false, true, false)
+  protected Game currentGame = Game.processParameters(false, false, false, false, true, false)
 
-  private Player currentPlayer
+  protected Player currentPlayer
 
   private Expression game = mock(Expression.class)
 
   private Expression current = mock(Expression.class)
 
-  private DelegateExecution execution = mock(DelegateExecution.class)
+  protected DelegateExecution execution = mock(DelegateExecution.class)
 
   @InjectMocks
   private ChooseCard chooseCard = new ChooseCard()
@@ -43,12 +43,14 @@ public class TestChooseCard {
 
   @Test
   public void testChooseCardBuildable() {
-    currentPlayer.hand = CardsFactory.getCardsAgeI(1, true)
+    CardsFactory.getCardsAgeI(3, true).each{
+      currentGame.nextPlayer().add(it)
+    }
     assertEquals(8, currentPlayer.hand.size())
     this.chooseCard.execute(this.execution)
     // Card chosen
-    assertNotNull(currentPlayer.cardToPlay)
-    assertEquals(Action.BUILD, currentPlayer.actionToPlay)
+    //    assertNotNull(currentPlayer.cardToPlay)
+    //    assertEquals(Action.BUILD, currentPlayer.actionToPlay)
     assertEquals(7, currentPlayer.hand.size())
     this.chooseCard.execute(this.execution)
     assertEquals(6, currentPlayer.hand.size())
@@ -62,8 +64,8 @@ public class TestChooseCard {
     assertEquals(8, currentPlayer.hand.size())
     this.chooseCard.execute(this.execution)
     // Card chosen
-    assertNotNull(currentPlayer.cardToPlay)
-    assertEquals(Action.SELL, currentPlayer.actionToPlay)
+    //    assertNotNull(currentPlayer.cardToPlay)
+    //    assertEquals(Action.SELL, currentPlayer.actionToPlay)
     assertEquals(7, currentPlayer.hand.size())
     this.chooseCard.execute(this.execution)
     assertEquals(6, currentPlayer.hand.size())

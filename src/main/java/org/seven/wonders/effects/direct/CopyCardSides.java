@@ -20,7 +20,6 @@ public class CopyCardSides extends ConditionedEffect {
   @Override
   public void apply(Wonder... others) {
     for (Wonder wonder : others) {
-      wonder.addVPs((int)getValue());
     }
   }
 

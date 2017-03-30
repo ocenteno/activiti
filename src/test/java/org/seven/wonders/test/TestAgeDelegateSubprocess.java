@@ -36,7 +36,7 @@ public class TestAgeDelegateSubprocess extends AbstractTest {
   }
 
   @Test
-  @Deployment(resources = { "diagrams/AgeDelegate.bpmn", "diagrams/PlayLeaderDelegate.bpmn" })
+  @Deployment(resources = { "diagrams/AgeDelegate.bpmn" })
   public void testRunAge() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("game", this.game);
