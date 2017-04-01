@@ -55,8 +55,8 @@
     <association id="association7" sourceRef="textannotation3" targetRef="age1"></association>
     <association id="association8" sourceRef="textannotation3" targetRef="age2"></association>
     <association id="association9" sourceRef="textannotation3" targetRef="age3"></association>
-    <association id="association2" sourceRef="textannotation2" targetRef="prepare"></association>
     <association id="association10" sourceRef="textannotation1" targetRef="init"></association>
+    <association id="association11" sourceRef="init" targetRef="textannotation2"></association>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_seven-wonders-simulator">
     <bpmndi:BPMNPlane bpmnElement="seven-wonders-simulator" id="BPMNPlane_seven-wonders-simulator">
@@ -136,13 +136,13 @@
         <omgdi:waypoint x="589.0" y="241.0"></omgdi:waypoint>
         <omgdi:waypoint x="735.0" y="199.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="association2" id="BPMNEdge_association2">
-        <omgdi:waypoint x="364.0" y="324.0"></omgdi:waypoint>
-        <omgdi:waypoint x="293.0" y="341.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="association10" id="BPMNEdge_association10">
         <omgdi:waypoint x="231.0" y="243.0"></omgdi:waypoint>
         <omgdi:waypoint x="292.0" y="200.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="association11" id="BPMNEdge_association11">
+        <omgdi:waypoint x="292.0" y="200.0"></omgdi:waypoint>
+        <omgdi:waypoint x="364.0" y="243.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

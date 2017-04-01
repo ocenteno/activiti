@@ -2,44 +2,51 @@ package org.seven.wonders.services;
 
 import java.util.List;
 
+import lombok.Data;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.seven.wonders.cards.Card;
 import org.seven.wonders.game.Game;
 
+@Data
 public class HandOutCards implements JavaDelegate {
 
   private Expression currentAge;
+
+  private Game game;
 
   @Override
   public void execute(DelegateExecution execution) {
     Object value = this.currentAge.getValue(execution);
     int age = value instanceof Integer ? (int)value : Integer.parseInt(value.toString());
-    Game game = (Game)execution.getVariable("game");
+    if (this.game == null) {
+      this.game = (Game)execution.getVariable("game");
+    }
     if (age % 2 == 0) { // Leaders || Age II
-      rotateRight(game);
+      rotateRight();
     } else { // Age I || Age III
-      rotateLeft(game);
+      rotateLeft();
     }
   }
 
-  private void rotateLeft(Game game) {
+  private void rotateLeft() {
     // Collection version
-    List<Card> tmp = game.currentPlayer().getHand();
-    for (int i = 0; i < game.totalPlayers() - 1; i++) {
-      game.currentPlayer().setHand(game.nextPlayer().getHand());
+    List<Card> tmp = this.game.currentPlayer().getHand();
+    for (int i = 0; i < this.game.totalPlayers() - 1; i++) {
+      this.game.currentPlayer().setHand(this.game.nextPlayer().getHand());
     }
-    game.currentPlayer().setHand(tmp);
+    this.game.currentPlayer().setHand(tmp);
   }
 
-  private void rotateRight(Game game) {
+  private void rotateRight() {
     // Collection version
-    List<Card> tmp = game.currentPlayer().getHand();
-    for (int i = 0; i < game.totalPlayers() - 1; i++) {
-      game.currentPlayer().setHand(game.previousPlayer().getHand());
+    List<Card> tmp = this.game.currentPlayer().getHand();
+    for (int i = 0; i < this.game.totalPlayers() - 1; i++) {
+      this.game.currentPlayer().setHand(this.game.previousPlayer().getHand());
     }
-    game.currentPlayer().setHand(tmp);
+    this.game.currentPlayer().setHand(tmp);
   }
 
 }
