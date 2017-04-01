@@ -22,7 +22,7 @@ public class Braavos extends Wonder {
     new Stage(GetVPs.instantiate(14), new Cost(WOOD, WOOD, CLAY, CLAY, TEXTILE, PAPYRUS)) };
 
   private static final Card[] SIDE_B = new Card[] {//
-    new Stage(DeferredVPs.instantiate(1, Condition.MY_BLUE), new Cost(GLASS, STONE)),
+    new Stage(DeferredVPs.instantiate(1, Condition.MY_BLUES), new Cost(GLASS, STONE)),
     new Stage(DebtCoins.instantiate(2, 11), new Cost(STONE, CLAY, CLAY, PAPYRUS)),
     new Stage(GetVPs.instantiate(8), Color.BLUE) };
 

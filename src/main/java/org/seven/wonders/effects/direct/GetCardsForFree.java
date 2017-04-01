@@ -4,7 +4,7 @@ import lombok.Data;
 
 import org.seven.wonders.cards.Card.Color;
 import org.seven.wonders.effects.ValueEffect;
-import org.seven.wonders.effects.hability.CanDuplicateCard;
+import org.seven.wonders.effects.hability.CanHaveCardTwice;
 import org.seven.wonders.wonders.Wonder;
 
 @Data
@@ -24,7 +24,7 @@ public class GetCardsForFree extends ValueEffect {
   @Override
   public void apply(Wonder... wonders) {
     for (Wonder wonder : wonders) {
-      wonder.enable(CanDuplicateCard.class);
+      wonder.enable(CanHaveCardTwice.class);
     }
   }
 

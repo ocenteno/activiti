@@ -10,7 +10,7 @@ public class CanBuildFree extends DirectEffect {
   @Override
   public void apply(Wonder... wonders) {
     for (Wonder wonder : wonders) {
-      wonder.enable(CanDuplicateCard.class);
+      wonder.enable(CanHaveCardTwice.class);
     }
   }
 

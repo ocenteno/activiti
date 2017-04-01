@@ -9,20 +9,20 @@ import org.seven.wonders.wonders.Wonder;
 
 @Data
 @RequiredArgsConstructor
-public class CanDuplicateCard extends HabilityEffect {
+public class CanHaveCardTwice extends HabilityEffect {
 
-  public static final CanDuplicateCard GREY = new CanDuplicateCard(Color.GREY);
+  public static final CanHaveCardTwice GREY = new CanHaveCardTwice(Color.GREY);
 
-  public static final CanDuplicateCard BROWN = new CanDuplicateCard(Color.BROWN);
+  public static final CanHaveCardTwice BROWN = new CanHaveCardTwice(Color.BROWN);
 
-  public static final CanDuplicateCard INSTANCE = new CanDuplicateCard(Color.ANY);
+  public static final CanHaveCardTwice INSTANCE = new CanHaveCardTwice(Color.ANY);
 
   private final Color color;
 
   @Override
   public void apply(Wonder... others) {
     for (Wonder wonder : others) {
-      wonder.enable(CanDuplicateCard.class);
+      wonder.enable(CanHaveCardTwice.class);
     }
   }
 

@@ -9,6 +9,7 @@ import lombok.Data;
 
 import org.seven.wonders.cards.Card;
 import org.seven.wonders.cards.Card.Color;
+import org.seven.wonders.tokens.Resource;
 import org.seven.wonders.tokens.Token;
 
 @Data
@@ -18,29 +19,55 @@ public class Condition implements Serializable {
 
   public static final Condition ALL_GREYS = new Condition(GREY, Type.COLOR, THREE);
 
+  public static final Condition ALL_LEADERS = new Condition(LEADER, Type.COLOR, THREE);
+
   public static final Condition ALL_WONDERS = new Condition(WONDER, Type.WONDER, THREE);
 
   public static final Condition OTHER_WONDERS = new Condition(WONDER, Type.WONDER, OTHERS);
 
-  public static final Condition MY_BLACK = new Condition(BLACK, Type.COLOR, ME);
-
-  public static final Condition MY_BROWNS = new Condition(BROWN, Type.COLOR, ME);
-
-  public static final Condition MY_COINS = new Condition(3, Type.COINS, ME);
-
-  public static final Condition MY_GREY_BROWN_GUILD = new Condition(new Color[] { BROWN, GREY, GUILD }, Type.COLOR, ME);
-
-  public static final Condition MY_GREYS = new Condition(GREY, Type.COLOR, ME);
-
-  public static final Condition MY_SHIELDS = new Condition(Token.Type.SHIELD, Type.TOKEN, ME);
-
   public static final Condition MY_WONDER = new Condition(WONDER, Type.WONDER, ME);
+
+  public static final Condition MY_LEADERS = new Condition(LEADER, Type.COLOR, ME);
+
+  public static final Condition MY_GUILDS = new Condition(GUILD, Type.COLOR, ME);
 
   public static final Condition MY_YELLOWS = new Condition(YELLOW, Type.COLOR, ME);
 
-  public static final Condition MY_BLUE = new Condition(BLUE, Type.COLOR, ME);
+  public static final Condition MY_GREENS = new Condition(GREEN, Type.COLOR, ME);
 
-  public static final Condition MY_GUILDS = new Condition(GUILD, Type.COLOR, ME);
+  public static final Condition MY_BLUES = new Condition(BLUE, Type.COLOR, ME);
+
+  public static final Condition MY_REDS = new Condition(RED, Type.COLOR, ME);
+
+  public static final Condition MY_BLACKS = new Condition(BLACK, Type.COLOR, ME);
+
+  public static final Condition MY_BROWNS = new Condition(BROWN, Type.COLOR, ME);
+
+  public static final Condition MY_GREYS = new Condition(GREY, Type.COLOR, ME);
+
+  public static final Condition MY_ANY_COLOR = new Condition(ANY, Type.COLOR, ME);
+
+  public static final Condition MY_GREY_BROWN_GUILD = new Condition(new Color[] { BROWN, GREY, GUILD }, Type.COLOR, ME);
+
+  public static final Condition MY_YELLOW_REDS = new Condition(new Color[] { YELLOW, RED }, Type.COLOR, ME);
+
+  public static final Condition MY_BROWN_GREYS = new Condition(new Color[] { BROWN, GREY }, Type.COLOR, ME);
+
+  public static final Condition MY_BLACK_LEADERS = new Condition(new Color[] { BLACK, LEADER }, Type.COLOR, ME);
+
+  public static final Condition MY_COINS = new Condition(3, Type.COINS, ME);
+
+  public static final Condition MY_SHIELDS = new Condition(Token.Type.SHIELD, Type.TOKEN, ME);
+
+  public static final Condition MY_RESOURCES = new Condition(Resource.ANY, Type.RESOURCES, ME);
+
+  public static final Condition MY_7_RESOURCES = new Condition(Resource.ALL, Type.RESOURCES, ME);
+
+  public static final Condition MY_RAW_RESOURCES = new Condition(new Resource[] { Resource.CLAY, Resource.STONE,
+      Resource.ORE, Resource.WOOD }, Type.RESOURCES, ME);
+
+  public static final Condition MY_MANUFACTURED_RESOURCES = new Condition(new Resource[] { Resource.GLASS,
+      Resource.PAPYRUS, Resource.TEXTILE }, Type.RESOURCES, ME);
 
   public static final Condition SIDE_BLACKS = new Condition(BLACK, Type.COLOR, SIDES);
 
@@ -111,7 +138,8 @@ public class Condition implements Serializable {
     COINS,
     NEIGHBOUR,
     PAY,
-    CHAIN
+    CHAIN,
+    RESOURCES
   }
 
   public static enum Scope {

@@ -33,6 +33,8 @@ public class Token implements Serializable {
 
   public static final Token DEBT_5 = new Token(-5, Type.DEBT);
 
+  public static final Token HALF_SHIELD = new Token(0, Type.HALF_SHIELD);
+
   private final int points;
 
   private final Type type;
@@ -43,6 +45,7 @@ public class Token implements Serializable {
     DEBT,
     DIPLOMACY,
     AGGRESSION,
+    HALF_SHIELD,
     SHIELD
   }
 

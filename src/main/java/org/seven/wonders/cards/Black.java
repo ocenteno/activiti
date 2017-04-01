@@ -70,7 +70,7 @@ public class Black extends Card {
 
   public static final Black BROTHERHOOD = new Black(DebtVPs.instantiate(3, 4), WOOD, WOOD, ORE, TEXTILE);
 
-  public static final Black SECRET_SOCIETY = new Black(CoinsVPsIf.instantiate(1, 1, Condition.MY_BLACK), //
+  public static final Black SECRET_SOCIETY = new Black(CoinsVPsIf.instantiate(1, 1, Condition.MY_BLACKS), //
       STONE, PAPYRUS);
 
   public static final Black EMBASSY = new Black(DiplomacyVPs.instantiate(3), STONE, TEXTILE, PAPYRUS);

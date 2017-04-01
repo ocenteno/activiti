@@ -24,7 +24,7 @@ public class CanBuildCheaper extends ConditionedEffect {
   @Override
   public void apply(Wonder... wonders) {
     for (Wonder wonder : wonders) {
-      wonder.enable(CanDuplicateCard.class);
+      wonder.enable(CanHaveCardTwice.class);
     }
   }
 
